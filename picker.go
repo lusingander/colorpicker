@@ -21,16 +21,16 @@ type ColorPicker struct {
 }
 
 // NewColorPicker returns color picker conrainer.
-func NewColorPicker(h int) *ColorPicker {
-	pickerSize := fyne.NewSize(h, h)
-	hueSize := fyne.NewSize(h/10, h)
+func NewColorPicker(size int) *ColorPicker {
+	pickerSize := fyne.NewSize(size, size)
+	hueSize := fyne.NewSize(size/10, size)
 
 	picker := &ColorPicker{
 		hue:     0,
 		Changed: func(color.Color) {},
 		cw:      pickerSize.Width,
 		hw:      hueSize.Width,
-		h:       h,
+		h:       size,
 	}
 
 	colorPickerRaster := newTappableRaster(createColorPickerPixelColor(picker.hue))
@@ -44,7 +44,7 @@ func NewColorPicker(h int) *ColorPicker {
 	huePickerRaster := newTappableRaster(huePicker)
 	huePickerRaster.SetMinSize(hueSize)
 	huePickerRaster.tapped = func(p fyne.Position) {
-		picker.hue = float64(p.Y) / float64(h)
+		picker.hue = float64(p.Y) / float64(hueSize.Height)
 		colorPickerRaster.setPixelColor(createColorPickerPixelColor(picker.hue))
 		colorPickerRaster.Refresh()
 		picker.setHueMarkerPosition(p.Y)
