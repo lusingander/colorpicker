@@ -8,6 +8,7 @@ import (
 	"fyne.io/fyne/layout"
 )
 
+// ColorPicker represents color picker component.
 type ColorPicker struct {
 	fyne.CanvasObject
 
@@ -19,6 +20,7 @@ type ColorPicker struct {
 	*selectHueMarker
 }
 
+// NewColorPicker returns color picker conrainer.
 func NewColorPicker(h int) *ColorPicker {
 	w := h
 	hw := w / 10
