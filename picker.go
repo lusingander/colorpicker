@@ -22,27 +22,27 @@ type ColorPicker struct {
 
 // NewColorPicker returns color picker conrainer.
 func NewColorPicker(h int) *ColorPicker {
-	w := h
-	hw := w / 10
+	pickerSize := fyne.NewSize(h, h)
+	hueSize := fyne.NewSize(h/10, h)
 
 	picker := &ColorPicker{
 		hue:     0,
 		Changed: func(color.Color) {},
-		cw:      w,
-		hw:      hw,
+		cw:      pickerSize.Width,
+		hw:      hueSize.Width,
 		h:       h,
 	}
 
 	colorPickerRaster := newTappableRaster(createColorPickerPixelColor(picker.hue))
-	colorPickerRaster.SetMinSize(fyne.NewSize(w, h))
+	colorPickerRaster.SetMinSize(pickerSize)
 	colorPickerRaster.tapped = func(p fyne.Position) {
 		picker.setColorMarkerPosition(p)
 		picker.updatePickerColor()
 	}
-	colorPickerRaster.Resize(fyne.NewSize(w, h)) // Note: doesn't render if remove this line...
+	colorPickerRaster.Resize(pickerSize) // Note: doesn't render if remove this line...
 
 	huePickerRaster := newTappableRaster(huePicker)
-	huePickerRaster.SetMinSize(fyne.NewSize(hw, h))
+	huePickerRaster.SetMinSize(hueSize)
 	huePickerRaster.tapped = func(p fyne.Position) {
 		picker.hue = float64(p.Y) / float64(h)
 		colorPickerRaster.setPixelColor(createColorPickerPixelColor(picker.hue))
@@ -50,10 +50,10 @@ func NewColorPicker(h int) *ColorPicker {
 		picker.setHueMarkerPosition(p.Y)
 		picker.updatePickerColor()
 	}
-	huePickerRaster.Resize(fyne.NewSize(hw, h))
+	huePickerRaster.Resize(hueSize)
 
 	picker.selectColorMarker = newSelectColorMarker()
-	picker.selectHueMarker = newSelectHueMarker(hw)
+	picker.selectHueMarker = newSelectHueMarker(hueSize.Width)
 
 	picker.CanvasObject = fyne.NewContainerWithLayout(
 		layout.NewVBoxLayout(),
