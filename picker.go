@@ -13,7 +13,8 @@ type ColorPicker struct {
 
 	Changed func(color.Color)
 
-	hue float64
+	cw, hw, h int
+	hue       float64
 	*selectColorMarker
 	*selectHueMarker
 }
@@ -25,14 +26,16 @@ func NewColorPicker(h int) *ColorPicker {
 	picker := &ColorPicker{
 		hue:     0,
 		Changed: func(color.Color) {},
+		cw:      w,
+		hw:      hw,
+		h:       h,
 	}
 
 	colorPickerRaster := newTappableRaster(createColorPickerPixelColor(picker.hue))
 	colorPickerRaster.SetMinSize(fyne.NewSize(w, h))
 	colorPickerRaster.tapped = func(p fyne.Position) {
-		color := fromHSV(picker.hue, float64(p.X)/float64(w), 1.0-float64(p.Y)/float64(h))
-		picker.Changed(color)
-		picker.selectColorMarker.setPosition(p)
+		picker.setColorMarkerPosition(p)
+		picker.updatePickerColor()
 	}
 	colorPickerRaster.Resize(fyne.NewSize(w, h)) // Note: doesn't render if remove this line...
 
@@ -42,7 +45,8 @@ func NewColorPicker(h int) *ColorPicker {
 		picker.hue = float64(p.Y) / float64(h)
 		colorPickerRaster.setPixelColor(createColorPickerPixelColor(picker.hue))
 		colorPickerRaster.Refresh()
-		picker.selectHueMarker.setPosition(p.Y)
+		picker.setHueMarkerPosition(p.Y)
+		picker.updatePickerColor()
 	}
 	huePickerRaster.Resize(fyne.NewSize(hw, h))
 
@@ -64,6 +68,13 @@ func NewColorPicker(h int) *ColorPicker {
 	return picker
 }
 
+func (p *ColorPicker) updatePickerColor() {
+	x := p.selectColorMarker.center.X
+	y := p.selectColorMarker.center.Y
+	color := fromHSV(p.hue, float64(x)/float64(p.cw), 1.0-float64(y)/float64(p.h))
+	p.Changed(color)
+}
+
 func createColorPickerPixelColor(hue float64) func(int, int, int, int) color.Color {
 	return func(x, y, w, h int) color.Color {
 		return fromHSV(hue, float64(x)/float64(w), 1.0-float64(y)/float64(h))
@@ -76,7 +87,8 @@ func huePicker(x, y, w, h int) color.Color {
 
 type selectColorMarker struct {
 	*canvas.Circle
-	r int
+	center fyne.Position
+	r      int
 }
 
 func newSelectColorMarker() *selectColorMarker {
@@ -89,11 +101,13 @@ func newSelectColorMarker() *selectColorMarker {
 			StrokeColor: color.RGBA{50, 50, 50, 255},
 			StrokeWidth: 1,
 		},
-		r: r,
+		center: p,
+		r:      r,
 	}
 }
 
-func (m *selectColorMarker) setPosition(pos fyne.Position) {
+func (m *selectColorMarker) setColorMarkerPosition(pos fyne.Position) {
+	m.center = pos
 	m.Move(fyne.NewPos(pos.X-m.r, pos.Y-m.r))
 }
 
@@ -112,7 +126,7 @@ func newSelectHueMarker(w int) *selectHueMarker {
 	}
 }
 
-func (m *selectHueMarker) setPosition(h int) {
+func (m *selectHueMarker) setHueMarkerPosition(h int) {
 	m.Position1.Y = h
 	m.Position2.Y = h
 }
