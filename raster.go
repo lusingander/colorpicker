@@ -70,11 +70,11 @@ func (r *rasterWidgetRender) Layout(size fyne.Size) {
 }
 
 func (r *rasterWidgetRender) MinSize() fyne.Size {
-	return r.MinSize()
+	return r.raster.r.MinSize()
 }
 
 func (r *rasterWidgetRender) Refresh() {
-	canvas.Refresh(r.raster)
+	canvas.Refresh(r.raster.r)
 }
 
 func (r *rasterWidgetRender) BackgroundColor() color.Color {
