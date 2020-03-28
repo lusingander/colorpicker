@@ -16,7 +16,6 @@ import (
 func main() {
 	a := app.New()
 	w := a.NewWindow("color picker sample")
-	w.Resize(fyne.NewSize(400, 250))
 
 	picker := colorpicker.NewColorPicker(200)
 
