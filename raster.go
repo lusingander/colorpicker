@@ -61,6 +61,12 @@ func (r *tappableRaster) Tapped(e *fyne.PointEvent) {
 
 func (r *tappableRaster) TappedSecondary(*fyne.PointEvent) {}
 
+func (r *tappableRaster) Dragged(e *fyne.DragEvent) {
+	r.tapped(e.Position)
+}
+
+func (r *tappableRaster) DragEnd() {}
+
 type rasterWidgetRender struct {
 	raster *tappableRaster
 }
@@ -85,5 +91,4 @@ func (r *rasterWidgetRender) Objects() []fyne.CanvasObject {
 	return []fyne.CanvasObject{r.raster.r}
 }
 
-func (r *rasterWidgetRender) Destroy() {
-}
+func (r *rasterWidgetRender) Destroy() {}
