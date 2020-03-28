@@ -15,10 +15,12 @@ type ColorPicker struct {
 
 	hue float64
 	*selectColorMarker
+	*selectHueMarker
 }
 
 func NewColorPicker(h int) *ColorPicker {
 	w := h
+	hw := w / 10
 
 	picker := &ColorPicker{
 		hue:     0,
@@ -30,20 +32,22 @@ func NewColorPicker(h int) *ColorPicker {
 	colorPickerRaster.tapped = func(p fyne.Position) {
 		color := fromHSV(picker.hue, float64(p.X)/float64(w), 1.0-float64(p.Y)/float64(h))
 		picker.Changed(color)
-		picker.setPosition(p)
+		picker.selectColorMarker.setPosition(p)
 	}
 	colorPickerRaster.Resize(fyne.NewSize(w, h)) // Note: doesn't render if remove this line...
 
 	huePickerRaster := newTappableRaster(huePicker)
-	huePickerRaster.SetMinSize(fyne.NewSize(w/10, h))
+	huePickerRaster.SetMinSize(fyne.NewSize(hw, h))
 	huePickerRaster.tapped = func(p fyne.Position) {
 		picker.hue = float64(p.Y) / float64(h)
 		colorPickerRaster.setPixelColor(createColorPickerPixelColor(picker.hue))
 		colorPickerRaster.Refresh()
+		picker.selectHueMarker.setPosition(p.Y)
 	}
-	huePickerRaster.Resize(fyne.NewSize(w, h))
+	huePickerRaster.Resize(fyne.NewSize(hw, h))
 
 	picker.selectColorMarker = newSelectColorMarker()
+	picker.selectHueMarker = newSelectHueMarker(hw)
 
 	picker.CanvasObject = fyne.NewContainerWithLayout(
 		layout.NewVBoxLayout(),
@@ -52,7 +56,7 @@ func NewColorPicker(h int) *ColorPicker {
 			layout.NewHBoxLayout(),
 			layout.NewSpacer(),
 			fyne.NewContainer(colorPickerRaster, picker.Circle),
-			huePickerRaster,
+			fyne.NewContainer(huePickerRaster, picker.Line),
 			layout.NewSpacer(),
 		),
 		layout.NewSpacer(),
@@ -91,4 +95,24 @@ func newSelectColorMarker() *selectColorMarker {
 
 func (m *selectColorMarker) setPosition(pos fyne.Position) {
 	m.Move(fyne.NewPos(pos.X-m.r, pos.Y-m.r))
+}
+
+type selectHueMarker struct {
+	*canvas.Line
+}
+
+func newSelectHueMarker(w int) *selectHueMarker {
+	return &selectHueMarker{
+		Line: &canvas.Line{
+			Position1:   fyne.NewPos(0, 0),
+			Position2:   fyne.NewPos(w, 0),
+			StrokeColor: color.RGBA{50, 50, 50, 255},
+			StrokeWidth: 1,
+		},
+	}
+}
+
+func (m *selectHueMarker) setPosition(h int) {
+	m.Position1.Y = h
+	m.Position2.Y = h
 }
