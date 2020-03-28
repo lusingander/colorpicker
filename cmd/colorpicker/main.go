@@ -17,11 +17,12 @@ func main() {
 	a := app.New()
 	w := a.NewWindow("color picker sample")
 
-	picker := colorpicker.NewColorPicker(200)
-
 	selectColorCode := widget.NewLabelWithStyle("", fyne.TextAlignLeading, fyne.TextStyle{Monospace: true})
 	selectColorRect := &canvas.Rectangle{FillColor: color.RGBA{0, 0, 0, 0}}
 	selectColorRect.SetMinSize(fyne.NewSize(30, 20))
+
+	// Create picker
+	picker := colorpicker.NewColorPicker(200)
 	picker.Changed = func(c color.Color) {
 		selectColorCode.SetText(hexColorString(c))
 		selectColorRect.FillColor = c
@@ -30,7 +31,7 @@ func main() {
 
 	w.SetContent(fyne.NewContainerWithLayout(
 		layout.NewVBoxLayout(),
-		picker.CanvasObject,
+		picker.CanvasObject, // layout
 		fyne.NewContainerWithLayout(
 			layout.NewHBoxLayout(),
 			layout.NewSpacer(),
