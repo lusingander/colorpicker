@@ -18,7 +18,7 @@ func main() {
 	w := a.NewWindow("color picker sample")
 	w.Resize(fyne.NewSize(400, 250))
 
-	picker := colorpicker.NewCreatePicker(200)
+	picker := colorpicker.NewColorPicker(200)
 
 	selectColorCode := widget.NewLabelWithStyle("", fyne.TextAlignLeading, fyne.TextStyle{Monospace: true})
 	selectColorRect := &canvas.Rectangle{FillColor: color.RGBA{0, 0, 0, 0}}

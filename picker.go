@@ -15,7 +15,7 @@ type ColorPicker struct {
 	hue float64
 }
 
-func NewCreatePicker(h int) *ColorPicker {
+func NewColorPicker(h int) *ColorPicker {
 	w := h
 
 	picker := &ColorPicker{
