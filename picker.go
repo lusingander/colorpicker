@@ -19,6 +19,7 @@ type ColorPicker struct {
 	hue       float64
 	*selectColorMarker
 	*selectHueMarker
+	*selectCircleHueMarker
 }
 
 // NewColorPicker returns color picker conrainer.
@@ -63,7 +64,7 @@ func NewColorPicker(size int) *ColorPicker {
 			layout.NewHBoxLayout(),
 			layout.NewSpacer(),
 			fyne.NewContainer(colorPickerRaster, picker.Circle),
-			fyne.NewContainer(huePickerRaster, picker.Line),
+			fyne.NewContainer(huePickerRaster, picker.selectHueMarker.Line),
 			layout.NewSpacer(),
 		),
 		layout.NewSpacer(),
@@ -96,10 +97,12 @@ func NewCircleColorPicker(size int) *ColorPicker {
 	circleHuePickerRaster.SetMinSize(hueSize)
 	circleHuePickerRaster.tapped = func(p fyne.Position) {
 		// TODO: impl
+		picker.hue = 0
 	}
 	circleHuePickerRaster.Resize(hueSize)
 
 	picker.selectColorMarker = newSelectColorMarker()
+	picker.selectCircleHueMarker = newSelectCircleHueMarker(hueSize.Width, hueSize.Height)
 
 	picker.CanvasObject = fyne.NewContainerWithLayout(
 		layout.NewVBoxLayout(),
@@ -109,7 +112,10 @@ func NewCircleColorPicker(size int) *ColorPicker {
 			layout.NewSpacer(),
 			fyne.NewContainerWithLayout(
 				layout.NewCenterLayout(),
-				circleHuePickerRaster,
+				fyne.NewContainer(
+					circleHuePickerRaster,
+					picker.selectCircleHueMarker.Line,
+				),
 				fyne.NewContainer(
 					colorPickerRaster,
 					picker.Circle,
@@ -209,4 +215,19 @@ func newSelectHueMarker(w int) *selectHueMarker {
 func (m *selectHueMarker) setHueMarkerPosition(h int) {
 	m.Position1.Y = h
 	m.Position2.Y = h
+}
+
+type selectCircleHueMarker struct {
+	*canvas.Line
+}
+
+func newSelectCircleHueMarker(w, h int) *selectCircleHueMarker {
+	return &selectCircleHueMarker{
+		Line: &canvas.Line{
+			Position1:   fyne.NewPos(w-(w/10), h/2),
+			Position2:   fyne.NewPos(w, h/2),
+			StrokeColor: color.RGBA{50, 50, 50, 255},
+			StrokeWidth: 1,
+		},
+	}
 }
