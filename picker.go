@@ -92,7 +92,7 @@ func newColorPicker(size int) *ColorPicker {
 }
 
 func newCircleColorPicker(size int) *ColorPicker {
-	pickerSize := fyne.NewSize(int(float64(size)*0.8/1.4), int(float64(size)*0.8/1.4))
+	pickerSize := fyne.NewSize(int(float64(size)*0.8/1.45), int(float64(size)*0.8/1.45))
 	hueSize := fyne.NewSize(size, size)
 
 	picker := &ColorPicker{
