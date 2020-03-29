@@ -71,6 +71,57 @@ func NewColorPicker(size int) *ColorPicker {
 	return picker
 }
 
+// NewCircleColorPicker returns color picker conrainer with circle hue style.
+func NewCircleColorPicker(size int) *ColorPicker {
+	pickerSize := fyne.NewSize(int(float64(size)*0.8/1.4), int(float64(size)*0.8/1.4))
+	hueSize := fyne.NewSize(size, size)
+
+	picker := &ColorPicker{
+		hue:     0,
+		Changed: func(color.Color) {},
+		cw:      pickerSize.Width,
+		hw:      hueSize.Width,
+		h:       pickerSize.Height,
+	}
+
+	colorPickerRaster := newTappableRaster(createColorPickerPixelColor(picker.hue))
+	colorPickerRaster.SetMinSize(pickerSize)
+	colorPickerRaster.tapped = func(p fyne.Position) {
+		picker.setColorMarkerPosition(p)
+		picker.updatePickerColor()
+	}
+	colorPickerRaster.Resize(pickerSize) // Note: doesn't render if remove this line...
+
+	circleHuePickerRaster := newTappableRaster(circleHuePicker)
+	circleHuePickerRaster.SetMinSize(hueSize)
+	circleHuePickerRaster.tapped = func(p fyne.Position) {
+		// TODO: impl
+	}
+	circleHuePickerRaster.Resize(hueSize)
+
+	picker.selectColorMarker = newSelectColorMarker()
+
+	picker.CanvasObject = fyne.NewContainerWithLayout(
+		layout.NewVBoxLayout(),
+		layout.NewSpacer(),
+		fyne.NewContainerWithLayout(
+			layout.NewHBoxLayout(),
+			layout.NewSpacer(),
+			fyne.NewContainerWithLayout(
+				layout.NewCenterLayout(),
+				circleHuePickerRaster,
+				fyne.NewContainer(
+					colorPickerRaster,
+					picker.Circle,
+				),
+			),
+			layout.NewSpacer(),
+		),
+		layout.NewSpacer(),
+	)
+	return picker
+}
+
 func (p *ColorPicker) updatePickerColor() {
 	x := p.selectColorMarker.center.X
 	y := p.selectColorMarker.center.Y
