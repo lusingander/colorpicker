@@ -57,7 +57,7 @@ func (r *tappableRaster) MinSize() fyne.Size {
 }
 
 func (r *tappableRaster) Tapped(e *fyne.PointEvent) {
-	if r.isOnRaster(e.Position) {
+	if r.tapped != nil && r.isOnRaster(e.Position) {
 		r.tapped(e.Position)
 	}
 }
@@ -65,7 +65,7 @@ func (r *tappableRaster) Tapped(e *fyne.PointEvent) {
 func (r *tappableRaster) TappedSecondary(*fyne.PointEvent) {}
 
 func (r *tappableRaster) Dragged(e *fyne.DragEvent) {
-	if r.isOnRaster(e.Position) {
+	if r.tapped != nil && r.isOnRaster(e.Position) {
 		r.tapped(e.Position)
 	}
 }
