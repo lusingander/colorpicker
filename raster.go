@@ -21,8 +21,9 @@ type tappableRaster struct {
 }
 
 func newTappableRaster(pixelColor func(x, y, w, h int) color.Color) *tappableRaster {
-	r := &tappableRaster{}
-	r.r = &canvas.Raster{}
+	r := &tappableRaster{
+		r: &canvas.Raster{},
+	}
 	r.setPixelColor(pixelColor)
 	r.ExtendBaseWidget(r)
 	return r
@@ -69,11 +70,11 @@ func (r *tappableRaster) Dragged(e *fyne.DragEvent) {
 	}
 }
 
+func (r *tappableRaster) DragEnd() {}
+
 func (r *tappableRaster) isOnRaster(p fyne.Position) bool {
 	return 0 <= p.X && p.X <= r.Size().Width && 0 <= p.Y && p.Y <= r.Size().Height
 }
-
-func (r *tappableRaster) DragEnd() {}
 
 type rasterWidgetRender struct {
 	raster *tappableRaster
