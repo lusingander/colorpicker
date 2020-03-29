@@ -98,6 +98,9 @@ func NewCircleColorPicker(size int) *ColorPicker {
 	circleHuePickerRaster.tapped = func(p fyne.Position) {
 		// TODO: impl
 		picker.hue = 0
+		picker.setCircleHueMarkerPosition(p)
+		picker.updatePickerColor()
+		picker.selectCircleHueMarker.Line.Refresh()
 	}
 	circleHuePickerRaster.Resize(hueSize)
 
@@ -219,6 +222,7 @@ func (m *selectHueMarker) setHueMarkerPosition(h int) {
 
 type selectCircleHueMarker struct {
 	*canvas.Line
+	cx, cy float64
 }
 
 func newSelectCircleHueMarker(w, h int) *selectCircleHueMarker {
@@ -229,5 +233,17 @@ func newSelectCircleHueMarker(w, h int) *selectCircleHueMarker {
 			StrokeColor: color.RGBA{50, 50, 50, 255},
 			StrokeWidth: 1,
 		},
+		cx: float64(w) / 2,
+		cy: float64(h) / 2,
 	}
+}
+
+func (m *selectCircleHueMarker) setCircleHueMarkerPosition(pos fyne.Position) {
+	v := newVectorFromPoints(m.cx, m.cy, float64(pos.X), float64(pos.Y))
+	nv := v.normalize()
+	v1 := nv.multiply(0.8 * m.cx)
+	v2 := nv.multiply(m.cx)
+	center := newVector(m.cx, m.cy)
+	m.Line.Position1 = center.add(v1).toPosition()
+	m.Line.Position2 = center.add(v2).toPosition()
 }
