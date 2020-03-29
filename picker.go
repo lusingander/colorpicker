@@ -9,6 +9,13 @@ import (
 	"fyne.io/fyne/layout"
 )
 
+type PickerStyle int
+
+const (
+	StyleDefault PickerStyle = iota
+	StyleCircle
+)
+
 // ColorPicker represents color picker component.
 type ColorPicker struct {
 	fyne.CanvasObject
@@ -23,7 +30,16 @@ type ColorPicker struct {
 }
 
 // NewColorPicker returns color picker conrainer.
-func NewColorPicker(size int) *ColorPicker {
+func NewColorPicker(size int, style PickerStyle) *ColorPicker {
+	switch style {
+	case StyleCircle:
+		return newCircleColorPicker(size)
+	default:
+		return newColorPicker(size)
+	}
+}
+
+func newColorPicker(size int) *ColorPicker {
 	pickerSize := fyne.NewSize(size, size)
 	hueSize := fyne.NewSize(size/10, size)
 
@@ -72,8 +88,7 @@ func NewColorPicker(size int) *ColorPicker {
 	return picker
 }
 
-// NewCircleColorPicker returns color picker conrainer with circle hue style.
-func NewCircleColorPicker(size int) *ColorPicker {
+func newCircleColorPicker(size int) *ColorPicker {
 	pickerSize := fyne.NewSize(int(float64(size)*0.8/1.4), int(float64(size)*0.8/1.4))
 	hueSize := fyne.NewSize(size, size)
 

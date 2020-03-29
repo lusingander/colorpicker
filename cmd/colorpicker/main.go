@@ -22,7 +22,7 @@ func main() {
 	selectColorRect.SetMinSize(fyne.NewSize(30, 20))
 
 	// Create picker
-	picker := colorpicker.NewColorPicker(200)
+	picker := colorpicker.NewColorPicker(200, colorpicker.StyleDefault)
 	picker.Changed = func(c color.Color) {
 		selectColorCode.SetText(hexColorString(c))
 		selectColorRect.FillColor = c
