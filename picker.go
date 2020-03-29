@@ -96,8 +96,9 @@ func NewCircleColorPicker(size int) *ColorPicker {
 	circleHuePickerRaster := newTappableRaster(circleHuePicker)
 	circleHuePickerRaster.SetMinSize(hueSize)
 	circleHuePickerRaster.tapped = func(p fyne.Position) {
-		// TODO: impl
-		picker.hue = 0
+		picker.hue = picker.selectCircleHueMarker.calcHueFromCircleMarker(p)
+		colorPickerRaster.setPixelColor(createColorPickerPixelColor(picker.hue))
+		colorPickerRaster.Refresh()
 		picker.setCircleHueMarkerPosition(p)
 		picker.updatePickerColor()
 		picker.selectCircleHueMarker.Line.Refresh()
@@ -246,4 +247,15 @@ func (m *selectCircleHueMarker) setCircleHueMarkerPosition(pos fyne.Position) {
 	center := newVector(m.cx, m.cy)
 	m.Line.Position1 = center.add(v1).toPosition()
 	m.Line.Position2 = center.add(v2).toPosition()
+}
+
+func (m *selectCircleHueMarker) calcHueFromCircleMarker(pos fyne.Position) float64 {
+	v := newVectorFromPoints(m.cx, m.cy, float64(pos.X), float64(pos.Y))
+	baseV := newVector(1, 0)
+	rad := math.Acos(baseV.dot(v) / (v.norm() * baseV.norm()))
+	if float64(pos.Y)-m.cy >= 0 {
+		rad = math.Pi*2 - rad
+	}
+	rad /= (math.Pi * 2)
+	return rad
 }
