@@ -2,6 +2,7 @@ package colorpicker
 
 import (
 	"image/color"
+	"math"
 
 	"fyne.io/fyne"
 	"fyne.io/fyne/canvas"
@@ -85,6 +86,32 @@ func createColorPickerPixelColor(hue float64) func(int, int, int, int) color.Col
 
 func huePicker(x, y, w, h int) color.Color {
 	return fromHSV(float64(y)/float64(h), 1.0, 1.0)
+}
+
+func circleHuePicker(x, y, w, h int) color.Color {
+	fx := float64(x)
+	fy := float64(y)
+	fw := float64(w)
+	fh := float64(h)
+
+	ir := fw/2 - fw/10
+	or := fw / 2
+	cx := fw / 2
+	cy := fh / 2
+
+	dist := math.Sqrt(math.Pow(fx-cx, 2) + math.Pow(fy-cy, 2))
+	if dist < ir || or < dist {
+		return color.RGBA{0, 0, 0, 0}
+	}
+
+	rad := math.Atan((fx - cx) / (fy - cy))
+	rad += (math.Pi / 2)
+	if fy-cy >= 0 {
+		rad += math.Pi
+	}
+	rad /= 2 * math.Pi
+
+	return fromHSV(rad, 1.0, 1.0)
 }
 
 type selectColorMarker struct {
