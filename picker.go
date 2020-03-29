@@ -9,10 +9,13 @@ import (
 	"fyne.io/fyne/layout"
 )
 
+// PickerStyle represents how the picker is displayed.
 type PickerStyle int
 
 const (
+	// StyleDefault is style to display vertical hue bar.
 	StyleDefault PickerStyle = iota
+	// StyleCircle is style to display circle hue bar.
 	StyleCircle
 )
 
