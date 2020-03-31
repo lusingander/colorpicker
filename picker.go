@@ -176,7 +176,7 @@ func circleHuePicker(x, y, w, h int) color.Color {
 	cx := fw / 2
 	cy := fh / 2
 
-	dist := math.Sqrt(math.Pow(fx-cx, 2) + math.Pow(fy-cy, 2))
+	dist := distance(fx, fy, cx, cy)
 	if dist < ir || or < dist {
 		return color.RGBA{0, 0, 0, 0}
 	}
