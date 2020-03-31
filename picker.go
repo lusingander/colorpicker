@@ -82,7 +82,7 @@ func newColorPicker(size int) *ColorPicker {
 		fyne.NewContainerWithLayout(
 			layout.NewHBoxLayout(),
 			layout.NewSpacer(),
-			fyne.NewContainer(colorPickerRaster, picker.Circle),
+			fyne.NewContainer(colorPickerRaster, picker.selectColorMarker.Circle),
 			fyne.NewContainer(huePickerRaster, picker.selectHueMarker.Line),
 			layout.NewSpacer(),
 		),
@@ -119,7 +119,6 @@ func newCircleColorPicker(size int) *ColorPicker {
 		colorPickerRaster.Refresh()
 		picker.setCircleHueMarkerPosition(p)
 		picker.updatePickerColor()
-		picker.selectCircleHueMarker.Line.Refresh()
 	}
 	circleHuePickerRaster.Resize(hueSize)
 
@@ -136,11 +135,11 @@ func newCircleColorPicker(size int) *ColorPicker {
 				layout.NewCenterLayout(),
 				fyne.NewContainer(
 					circleHuePickerRaster,
-					picker.selectCircleHueMarker.Line,
+					picker.selectCircleHueMarker.Circle,
 				),
 				fyne.NewContainer(
 					colorPickerRaster,
-					picker.Circle,
+					picker.selectColorMarker.Circle,
 				),
 			),
 			layout.NewSpacer(),
@@ -240,31 +239,39 @@ func (m *selectHueMarker) setHueMarkerPosition(h int) {
 }
 
 type selectCircleHueMarker struct {
-	*canvas.Line
+	*canvas.Circle
 	cx, cy float64
+	r      float64
 }
 
 func newSelectCircleHueMarker(w, h int) *selectCircleHueMarker {
-	return &selectCircleHueMarker{
-		Line: &canvas.Line{
-			Position1:   fyne.NewPos(w-(w/10), h/2),
-			Position2:   fyne.NewPos(w, h/2),
-			StrokeColor: color.RGBA{50, 50, 50, 255},
-			StrokeWidth: 1,
+	marker := &selectCircleHueMarker{
+		Circle: &canvas.Circle{
+			FillColor:   color.RGBA{50, 50, 50, 120},
+			StrokeColor: color.RGBA{50, 50, 50, 200},
+			StrokeWidth: 2,
 		},
 		cx: float64(w) / 2,
 		cy: float64(h) / 2,
+		r:  (float64(w) / 10) / 2,
 	}
+	markerCenter := fyne.NewPos(w-int(marker.r), h/2)
+	marker.updateMarkerPosition(markerCenter)
+	return marker
 }
 
 func (m *selectCircleHueMarker) setCircleHueMarkerPosition(pos fyne.Position) {
 	v := newVectorFromPoints(m.cx, m.cy, float64(pos.X), float64(pos.Y))
 	nv := v.normalize()
-	v1 := nv.multiply(0.8 * m.cx)
-	v2 := nv.multiply(m.cx)
 	center := newVector(m.cx, m.cy)
-	m.Line.Position1 = center.add(v1).toPosition()
-	m.Line.Position2 = center.add(v2).toPosition()
+	markerCenter := center.add(nv.multiply(0.9 * m.cx)).toPosition()
+	m.updateMarkerPosition(markerCenter)
+}
+
+func (m *selectCircleHueMarker) updateMarkerPosition(p fyne.Position) {
+	r := int(m.r)
+	m.Circle.Position1 = fyne.NewPos(p.X-r, p.Y-r)
+	m.Circle.Position2 = fyne.NewPos(p.X+r, p.Y+r)
 }
 
 func (m *selectCircleHueMarker) calcHueFromCircleMarker(pos fyne.Position) float64 {
