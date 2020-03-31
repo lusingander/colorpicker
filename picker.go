@@ -186,7 +186,7 @@ func circleHuePicker(x, y, w, h int) color.Color {
 	if fy-cy >= 0 {
 		rad += math.Pi
 	}
-	rad /= 2 * math.Pi
+	hue := rad / (2 * math.Pi)
 
-	return fromHSV(rad, 1.0, 1.0)
+	return fromHSV(hue, 1.0, 1.0)
 }

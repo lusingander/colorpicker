@@ -107,6 +107,6 @@ func (m *selectCircleHueMarker) calcHueFromCircleMarker(pos fyne.Position) float
 	if float64(pos.Y)-m.cy >= 0 {
 		rad = math.Pi*2 - rad
 	}
-	rad /= (math.Pi * 2)
-	return rad
+	hue := rad / (math.Pi * 2)
+	return hue
 }
