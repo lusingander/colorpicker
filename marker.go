@@ -8,6 +8,11 @@ import (
 	"fyne.io/fyne/canvas"
 )
 
+var (
+	markerFillColor   = color.RGBA{50, 50, 50, 120}
+	markerStrokeColor = color.RGBA{50, 50, 50, 200}
+)
+
 type selectColorMarker struct {
 	*canvas.Circle
 	center fyne.Position
@@ -21,8 +26,8 @@ func newSelectColorMarker() *selectColorMarker {
 		Circle: &canvas.Circle{
 			Position1:   fyne.NewPos(p.X-r, p.Y-r),
 			Position2:   fyne.NewPos(p.X+r, p.Y+r),
-			FillColor:   color.RGBA{50, 50, 50, 120},
-			StrokeColor: color.RGBA{50, 50, 50, 200},
+			FillColor:   markerFillColor,
+			StrokeColor: markerStrokeColor,
 			StrokeWidth: 1,
 		},
 		center: p,
@@ -44,8 +49,8 @@ func newSelectHueMarker(w int) *selectHueMarker {
 	r := float64(w) / 2
 	marker := &selectHueMarker{
 		Circle: &canvas.Circle{
-			FillColor:   color.RGBA{50, 50, 50, 120},
-			StrokeColor: color.RGBA{50, 50, 50, 200},
+			FillColor:   markerFillColor,
+			StrokeColor: markerStrokeColor,
 			StrokeWidth: 2,
 		},
 		r: r,
@@ -74,8 +79,8 @@ type selectCircleHueMarker struct {
 func newSelectCircleHueMarker(w, h int) *selectCircleHueMarker {
 	marker := &selectCircleHueMarker{
 		Circle: &canvas.Circle{
-			FillColor:   color.RGBA{50, 50, 50, 120},
-			StrokeColor: color.RGBA{50, 50, 50, 200},
+			FillColor:   markerFillColor,
+			StrokeColor: markerStrokeColor,
 			StrokeWidth: 2,
 		},
 		cx: float64(w) / 2,
