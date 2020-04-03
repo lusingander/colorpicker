@@ -35,9 +35,9 @@ func newSelectColorMarker() *selectColorMarker {
 	}
 }
 
-func (m *selectColorMarker) setColorMarkerPosition(pos fyne.Position) {
-	m.center = pos
-	m.Move(fyne.NewPos(pos.X-m.r, pos.Y-m.r))
+func (m *selectColorMarker) setColorMarkerPosition(p fyne.Position) {
+	m.center = p
+	m.Move(fyne.NewPos(p.X-m.r, p.Y-m.r))
 }
 
 type selectHueMarker struct {
@@ -92,8 +92,8 @@ func newSelectCircleHueMarker(w, h int) *selectCircleHueMarker {
 	return marker
 }
 
-func (m *selectCircleHueMarker) setCircleHueMarkerPosition(pos fyne.Position) {
-	v := newVectorFromPoints(m.cx, m.cy, float64(pos.X), float64(pos.Y))
+func (m *selectCircleHueMarker) setCircleHueMarkerPosition(p fyne.Position) {
+	v := newVectorFromPoints(m.cx, m.cy, float64(p.X), float64(p.Y))
 	nv := v.normalize()
 	center := newVector(m.cx, m.cy)
 	markerCenter := center.add(nv.multiply(0.9 * m.cx)).toPosition()
@@ -106,11 +106,11 @@ func (m *selectCircleHueMarker) updateMarkerPosition(p fyne.Position) {
 	m.Circle.Position2 = fyne.NewPos(p.X+r, p.Y+r)
 }
 
-func (m *selectCircleHueMarker) calcHueFromCircleMarker(pos fyne.Position) float64 {
-	v := newVectorFromPoints(m.cx, m.cy, float64(pos.X), float64(pos.Y))
+func (m *selectCircleHueMarker) calcHueFromCircleMarker(p fyne.Position) float64 {
+	v := newVectorFromPoints(m.cx, m.cy, float64(p.X), float64(p.Y))
 	baseV := newVector(1, 0)
 	rad := math.Acos(baseV.dot(v) / (v.norm() * baseV.norm()))
-	if float64(pos.Y)-m.cy >= 0 {
+	if float64(p.Y)-m.cy >= 0 {
 		rad = math.Pi*2 - rad
 	}
 	hue := rad / (math.Pi * 2)
