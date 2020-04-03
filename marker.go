@@ -21,7 +21,8 @@ func newSelectColorMarker() *selectColorMarker {
 		Circle: &canvas.Circle{
 			Position1:   fyne.NewPos(p.X-r, p.Y-r),
 			Position2:   fyne.NewPos(p.X+r, p.Y+r),
-			StrokeColor: color.RGBA{50, 50, 50, 255},
+			FillColor:   color.RGBA{50, 50, 50, 120},
+			StrokeColor: color.RGBA{50, 50, 50, 200},
 			StrokeWidth: 1,
 		},
 		center: p,
