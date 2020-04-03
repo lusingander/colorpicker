@@ -1,0 +1,43 @@
+package colorpicker
+
+import (
+	"image/color"
+	"testing"
+)
+
+func TestFromHSV(t *testing.T) {
+	tests := []struct {
+		h, s, v  float64
+		expected color.Color
+	}{
+		{0 / 360., 1., 1., color.RGBA{0xff, 0x00, 0x00, 0xff}},
+		{30 / 360., 1., 1., color.RGBA{0xff, 0x80, 0x00, 0xff}},
+		{60 / 360., 1., 1., color.RGBA{0xff, 0xff, 0x00, 0xff}},
+		{90 / 360., 1., 1., color.RGBA{0x80, 0xff, 0x00, 0xff}},
+		{120 / 360., 1., 1., color.RGBA{0x00, 0xff, 0x00, 0xff}},
+		{150 / 360., 1., 1., color.RGBA{0x00, 0xff, 0x80, 0xff}},
+		{180 / 360., 1., 1., color.RGBA{0x00, 0xff, 0xff, 0xff}},
+		{210 / 360., 1., 1., color.RGBA{0x00, 0x80, 0xff, 0xff}},
+		{240 / 360., 1., 1., color.RGBA{0x00, 0x00, 0xff, 0xff}},
+		{270 / 360., 1., 1., color.RGBA{0x80, 0x00, 0xff, 0xff}},
+		{300 / 360., 1., 1., color.RGBA{0xff, 0x00, 0xff, 0xff}},
+		{330 / 360., 1., 1., color.RGBA{0xff, 0x00, 0x80, 0xff}},
+		{0 / 360., 1., 0., color.RGBA{0x00, 0x00, 0x00, 0xff}},
+		{0 / 360., 1., 0.2, color.RGBA{0x33, 0x00, 0x00, 0xff}},
+		{0 / 360., 1., 0.4, color.RGBA{0x66, 0x00, 0x00, 0xff}},
+		{0 / 360., 1., 0.6, color.RGBA{0x99, 0x00, 0x00, 0xff}},
+		{0 / 360., 1., 0.8, color.RGBA{0xcc, 0x00, 0x00, 0xff}},
+		{180 / 360., 0., 1., color.RGBA{0xff, 0xff, 0xff, 0xff}},
+		{180 / 360., 0.2, 1., color.RGBA{0xcc, 0xff, 0xff, 0xff}},
+		{180 / 360., 0.4, 1., color.RGBA{0x99, 0xff, 0xff, 0xff}},
+		{180 / 360., 0.6, 1., color.RGBA{0x66, 0xff, 0xff, 0xff}},
+		{180 / 360., 0.8, 1., color.RGBA{0x33, 0xff, 0xff, 0xff}},
+	}
+	for _, test := range tests {
+		actual := *fromHSV(test.h, test.s, test.v)
+		if actual != test.expected {
+			t.Errorf("(h, s, v) = (%f, %f, %f) expected: %v, actual: %v",
+				test.h, test.s, test.v, test.expected, actual)
+		}
+	}
+}
