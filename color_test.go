@@ -7,8 +7,8 @@ import (
 
 func TestFromHSV(t *testing.T) {
 	tests := []struct {
-		h, s, v  float64
-		expected color.Color
+		h, s, v float64
+		want    color.Color
 	}{
 		{0 / 360., 1., 1., color.RGBA{0xff, 0x00, 0x00, 0xff}},
 		{30 / 360., 1., 1., color.RGBA{0xff, 0x80, 0x00, 0xff}},
@@ -35,10 +35,10 @@ func TestFromHSV(t *testing.T) {
 		{180 / 360., 0.8, 1., color.RGBA{0x33, 0xff, 0xff, 0xff}},
 	}
 	for _, test := range tests {
-		actual := *fromHSV(test.h, test.s, test.v)
-		if actual != test.expected {
-			t.Errorf("(h, s, v) = (%f, %f, %f) expected: %v, actual: %v",
-				test.h, test.s, test.v, test.expected, actual)
+		got := *fromHSV(test.h, test.s, test.v)
+		if got != test.want {
+			t.Errorf("fromHSV(%f, %f, %f) = %v; want %v",
+				test.h, test.s, test.v, got, test.want)
 		}
 	}
 }
