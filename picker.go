@@ -6,6 +6,7 @@ import (
 
 	"fyne.io/fyne"
 	"fyne.io/fyne/layout"
+	"fyne.io/fyne/theme"
 )
 
 // PickerStyle represents how the picker is displayed.
@@ -148,6 +149,36 @@ func newCircleColorPicker(size int) *ColorPicker {
 	)
 	return picker
 }
+
+func (p *ColorPicker) CreateRenderer() fyne.WidgetRenderer {
+	return &colorPickerWidgetRender{picker: p}
+}
+
+type colorPickerWidgetRender struct {
+	picker *ColorPicker
+}
+
+func (r *colorPickerWidgetRender) Layout(size fyne.Size) {
+	r.picker.CanvasObject.Resize(size)
+}
+
+func (r *colorPickerWidgetRender) MinSize() fyne.Size {
+	return r.picker.CanvasObject.MinSize()
+}
+
+func (r *colorPickerWidgetRender) Refresh() {
+	r.picker.CanvasObject.Refresh()
+}
+
+func (r *colorPickerWidgetRender) BackgroundColor() color.Color {
+	return theme.BackgroundColor()
+}
+
+func (r *colorPickerWidgetRender) Objects() []fyne.CanvasObject {
+	return []fyne.CanvasObject{r.picker.CanvasObject}
+}
+
+func (r *colorPickerWidgetRender) Destroy() {}
 
 func (p *ColorPicker) updatePickerColor() {
 	x := p.selectColorMarker.center.X

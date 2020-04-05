@@ -41,7 +41,7 @@ func createPickerContainer(height int, style colorpicker.PickerStyle) *fyne.Cont
 
 	return fyne.NewContainerWithLayout(
 		layout.NewVBoxLayout(),
-		picker.CanvasObject, // layout
+		picker, // layout
 		fyne.NewContainerWithLayout(
 			layout.NewHBoxLayout(),
 			layout.NewSpacer(),
