@@ -167,24 +167,23 @@ func huePicker(x, y, w, h int) color.Color {
 }
 
 func circleHuePicker(x, y, w, h int) color.Color {
-	fx := float64(x)
-	fy := float64(y)
-	fw := float64(w)
-	fh := float64(h)
+	return circleHuePickerFloat(float64(x), float64(y), float64(w), float64(h))
+}
 
-	ir := fw/2 - fw/10
-	or := fw / 2
-	cx := fw / 2
-	cy := fh / 2
+func circleHuePickerFloat(x, y, w, h float64) color.Color {
+	ir := w/2 - w/10
+	or := w / 2
+	cx := w / 2
+	cy := h / 2
 
-	dist := distance(fx, fy, cx, cy)
+	dist := distance(x, y, cx, cy)
 	if dist < ir || or < dist {
 		return color.RGBA{0, 0, 0, 0}
 	}
 
-	rad := math.Atan((fx - cx) / (fy - cy))
+	rad := math.Atan((x - cx) / (y - cy))
 	rad += (math.Pi / 2)
-	if fy-cy >= 0 {
+	if y-cy >= 0 {
 		rad += math.Pi
 	}
 	hue := rad / (2 * math.Pi)
