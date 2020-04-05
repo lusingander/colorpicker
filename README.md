@@ -11,6 +11,9 @@ picker.SetOnChanged(func(c color.Color) {
     // called when the color is changed on the picker
     fmt.Println(c)
 })
+
+// you can use it just like any other Fyne widget
+fyne.NewContainer(picker)
 ```
 
 ## Example
