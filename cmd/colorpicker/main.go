@@ -49,10 +49,18 @@ func createPickerContainer(height int, style colorpicker.PickerStyle) *fyne.Cont
 			selectColorRect,
 			layout.NewSpacer(),
 		),
+		widget.NewLabel(styleName(style)),
 	)
 }
 
 func hexColorString(c color.Color) string {
 	rgba := color.RGBAModel.Convert(c).(color.RGBA)
 	return fmt.Sprintf("#%.2X%.2X%.2X", rgba.R, rgba.G, rgba.B)
+}
+
+func styleName(s colorpicker.PickerStyle) string {
+	if s == colorpicker.StyleCircle {
+		return "StyleCircle"
+	}
+	return "StyleDefault"
 }
