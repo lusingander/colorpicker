@@ -1,5 +1,8 @@
-colorpicker
-====
+![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/lusingander/colorpicker)
+[![Go Report Card](https://goreportcard.com/badge/github.com/lusingander/colorpicker)](https://goreportcard.com/report/github.com/lusingander/colorpicker)
+![GitHub](https://img.shields.io/github/license/lusingander/colorpicker)
+
+# colorpicker
 
 Color picker component for [Fyne](https://fyne.io/)
 
