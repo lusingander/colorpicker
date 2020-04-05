@@ -32,7 +32,7 @@ func createPickerContainer(height int, style colorpicker.PickerStyle) *fyne.Cont
 	selectColorRect.SetMinSize(fyne.NewSize(30, 20))
 
 	// Create picker
-	picker := colorpicker.NewColorPicker(height, style)
+	picker := colorpicker.New(height, style)
 	picker.SetOnChanged(func(c color.Color) {
 		selectColorCode.SetText(hexColorString(c))
 		selectColorRect.FillColor = c
