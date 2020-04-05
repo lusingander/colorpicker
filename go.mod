@@ -1,4 +1,4 @@
-module github.com/lusingander/fyne-colorpicker
+module github.com/lusingander/colorpicker
 
 go 1.13
 

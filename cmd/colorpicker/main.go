@@ -10,7 +10,7 @@ import (
 	"fyne.io/fyne/layout"
 	"fyne.io/fyne/widget"
 
-	colorpicker "github.com/lusingander/fyne-colorpicker"
+	"github.com/lusingander/colorpicker"
 )
 
 func main() {
