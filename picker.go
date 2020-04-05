@@ -53,6 +53,7 @@ func newColorPicker(size int) ColorPicker {
 	colorPickerRaster.tapped = func(p fyne.Position) {
 		picker.setColorMarkerPosition(p)
 		picker.updatePickerColor()
+		colorPickerRaster.Refresh()
 	}
 	colorPickerRaster.Resize(pickerSize) // Note: doesn't render if remove this line...
 
@@ -103,6 +104,7 @@ func newCircleColorPicker(size int) ColorPicker {
 	colorPickerRaster.tapped = func(p fyne.Position) {
 		picker.setColorMarkerPosition(p)
 		picker.updatePickerColor()
+		colorPickerRaster.Refresh()
 	}
 	colorPickerRaster.Resize(pickerSize) // Note: doesn't render if remove this line...
 
