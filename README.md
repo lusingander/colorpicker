@@ -7,10 +7,10 @@ Color picker component for [Fyne](https://fyne.io/)
 
 ```go
 picker := colorpicker.NewColorPicker(200 /* height */, colorpicker.StyleCircle /* Style */)
-picker.Changed = func(c color.Color) {
+picker.SetOnChanged(func(c color.Color) {
     // called when the color is changed on the picker
     fmt.Println(c)
-}
+})
 ```
 
 ## Example

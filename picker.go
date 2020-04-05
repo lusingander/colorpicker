@@ -20,20 +20,14 @@ const (
 )
 
 // ColorPicker represents color picker component.
-type ColorPicker struct {
+type ColorPicker interface {
 	fyne.CanvasObject
 
-	Changed func(color.Color)
-
-	cw, hw, h int
-	hue       float64
-	*selectColorMarker
-	*selectHueMarker
-	*selectCircleHueMarker
+	SetOnChanged(func(color.Color))
 }
 
 // NewColorPicker returns color picker conrainer.
-func NewColorPicker(size int, style PickerStyle) *ColorPicker {
+func NewColorPicker(size int, style PickerStyle) ColorPicker {
 	switch style {
 	case StyleCircle:
 		return newCircleColorPicker(size)
@@ -42,13 +36,40 @@ func NewColorPicker(size int, style PickerStyle) *ColorPicker {
 	}
 }
 
-func newColorPicker(size int) *ColorPicker {
+type colorPicker struct {
+	fyne.CanvasObject
+
+	changed func(color.Color)
+
+	cw, hw, h int
+	hue       float64
+	*selectColorMarker
+	*selectHueMarker
+	*selectCircleHueMarker
+}
+
+func (p *colorPicker) SetOnChanged(f func(color.Color)) {
+	p.changed = f
+}
+
+func (p *colorPicker) updatePickerColor() {
+	x := p.selectColorMarker.center.X
+	y := p.selectColorMarker.center.Y
+	color := fromHSV(p.hue, float64(x)/float64(p.cw), 1.0-float64(y)/float64(p.h))
+	p.changed(color)
+}
+
+func (p *colorPicker) CreateRenderer() fyne.WidgetRenderer {
+	return &colorPickerWidgetRender{picker: p}
+}
+
+func newColorPicker(size int) ColorPicker {
 	pickerSize := fyne.NewSize(size, size)
 	hueSize := fyne.NewSize(size/10, size)
 
-	picker := &ColorPicker{
+	picker := &colorPicker{
 		hue:     0,
-		Changed: func(color.Color) {},
+		changed: func(color.Color) {},
 		cw:      pickerSize.Width,
 		hw:      hueSize.Width,
 		h:       size,
@@ -91,14 +112,14 @@ func newColorPicker(size int) *ColorPicker {
 	return picker
 }
 
-func newCircleColorPicker(size int) *ColorPicker {
+func newCircleColorPicker(size int) ColorPicker {
 	// pickerSize < ((areaWidth - (hueBarWidth * 2)) / √2)
 	pickerSize := fyne.NewSize(int(float64(size)*0.8/1.45), int(float64(size)*0.8/1.45))
 	hueSize := fyne.NewSize(size, size)
 
-	picker := &ColorPicker{
+	picker := &colorPicker{
 		hue:     0,
-		Changed: func(color.Color) {},
+		changed: func(color.Color) {},
 		cw:      pickerSize.Width,
 		hw:      hueSize.Width,
 		h:       pickerSize.Height,
@@ -150,12 +171,8 @@ func newCircleColorPicker(size int) *ColorPicker {
 	return picker
 }
 
-func (p *ColorPicker) CreateRenderer() fyne.WidgetRenderer {
-	return &colorPickerWidgetRender{picker: p}
-}
-
 type colorPickerWidgetRender struct {
-	picker *ColorPicker
+	picker *colorPicker
 }
 
 func (r *colorPickerWidgetRender) Layout(size fyne.Size) {
@@ -179,13 +196,6 @@ func (r *colorPickerWidgetRender) Objects() []fyne.CanvasObject {
 }
 
 func (r *colorPickerWidgetRender) Destroy() {}
-
-func (p *ColorPicker) updatePickerColor() {
-	x := p.selectColorMarker.center.X
-	y := p.selectColorMarker.center.Y
-	color := fromHSV(p.hue, float64(x)/float64(p.cw), 1.0-float64(y)/float64(p.h))
-	p.Changed(color)
-}
 
 func createColorPickerPixelColor(hue float64) func(int, int, int, int) color.Color {
 	return func(x, y, w, h int) color.Color {

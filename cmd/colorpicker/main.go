@@ -33,11 +33,11 @@ func createPickerContainer(height int, style colorpicker.PickerStyle) *fyne.Cont
 
 	// Create picker
 	picker := colorpicker.NewColorPicker(height, style)
-	picker.Changed = func(c color.Color) {
+	picker.SetOnChanged(func(c color.Color) {
 		selectColorCode.SetText(hexColorString(c))
 		selectColorRect.FillColor = c
 		selectColorRect.Refresh()
-	}
+	})
 
 	return fyne.NewContainerWithLayout(
 		layout.NewVBoxLayout(),
