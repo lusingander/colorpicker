@@ -21,6 +21,11 @@ type colorPicker struct {
 	*selectCircleHueMarker
 }
 
+func (p *colorPicker) SetColor(c color.Color) {
+	if p.selectHueMarker != nil {
+	}
+}
+
 func (p *colorPicker) SetOnChanged(f func(color.Color)) {
 	p.changed = f
 }
