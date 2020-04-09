@@ -20,6 +20,7 @@ const (
 type ColorPicker interface {
 	fyne.CanvasObject
 
+	SetColor(color.Color)
 	SetOnChanged(func(color.Color))
 }
 
