@@ -19,10 +19,21 @@ type colorPicker struct {
 	*selectColorMarker
 	*selectHueMarker
 	*selectCircleHueMarker
+
+	colorPickerRaster *tappableRaster
 }
 
 func (p *colorPicker) SetColor(c color.Color) {
 	if p.selectHueMarker != nil {
+		h, s, v := fromColor(c)
+		p.hue = h
+		p.setHueMarkerPosition(int(float64(p.h) * h))
+		p.colorPickerRaster.setPixelColor(createColorPickerPixelColor(p.hue))
+		p.colorPickerRaster.Refresh()
+		x := int(round(float64(p.cw) * s))
+		y := int(round(float64(p.h) * (1.0 - v)))
+		p.setColorMarkerPosition(fyne.NewPos(x, y))
+		p.updatePickerColor()
 	}
 }
 
@@ -61,6 +72,7 @@ func newColorPicker(size int) ColorPicker {
 		colorPickerRaster.Refresh()
 	}
 	colorPickerRaster.Resize(pickerSize) // Note: doesn't render if remove this line...
+	picker.colorPickerRaster = colorPickerRaster
 
 	huePickerRaster := newTappableRaster(huePicker)
 	huePickerRaster.SetMinSize(hueSize)
