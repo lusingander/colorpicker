@@ -70,6 +70,40 @@ func fromHSV(h, s, v float64) *color.RGBA {
 	}
 }
 
+func fromColor(c color.Color) (h, s, v float64) {
+	r, g, b := toFloatRGB(c)
+	min := math.Min(r, math.Min(g, b))
+	max := math.Max(r, math.Max(g, b))
+	v = max
+
+	d := max - min
+	if d == 0 {
+		h = 0
+		s = 0
+		return
+	}
+	s = d / max
+	if r == max {
+		h = (1. / 6.) * ((g - b) / d)
+	} else if g == max {
+		h = (1./6.)*((b-r)/d) + (1. / 3.)
+	} else { // b == max
+		h = (1./6.)*((r-g)/d) + (2. / 3.)
+	}
+	if h < 0 {
+		h++
+	} else if h > 1 {
+		h--
+	}
+	return
+}
+
+func toFloatRGB(c color.Color) (float64, float64, float64) {
+	max := 65535.
+	r, g, b, _ := c.RGBA()
+	return float64(r) / max, float64(g) / max, float64(b) / max
+}
+
 func round(v float64) uint8 {
 	return uint8(math.Round(v))
 }
