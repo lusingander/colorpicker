@@ -40,30 +40,28 @@ func (m *selectColorMarker) setColorMarkerPosition(p fyne.Position) {
 
 type selectHueMarker struct {
 	*canvas.Circle
-	r float64
+	radius float64
 }
 
 func newSelectHueMarker(w int) *selectHueMarker {
-	r := float64(w) / 2
 	marker := &selectHueMarker{
 		Circle: &canvas.Circle{
 			FillColor:   markerFillColor,
 			StrokeColor: markerStrokeColor,
 			StrokeWidth: 2,
 		},
-		r: r,
+		radius: float64(w) / 2,
 	}
-	markerCenter := fyne.NewPos(int(r), 0)
-	marker.updateMarkerPosition(markerCenter)
+	marker.setHueMarkerPosition(0)
 	return marker
 }
 
 func (m *selectHueMarker) setHueMarkerPosition(h int) {
-	m.updateMarkerPosition(fyne.NewPos(int(m.r), h))
+	m.updateMarkerPosition(fyne.NewPos(int(m.radius), h))
 }
 
 func (m *selectHueMarker) updateMarkerPosition(p fyne.Position) {
-	r := int(m.r)
+	r := int(round(m.radius))
 	m.Circle.Position1 = fyne.NewPos(p.X-r, p.Y-r)
 	m.Circle.Position2 = fyne.NewPos(p.X+r, p.Y+r)
 }
