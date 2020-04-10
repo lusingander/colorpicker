@@ -69,21 +69,23 @@ func (m *selectHueMarker) updateMarkerPosition(p fyne.Position) {
 type selectCircleHueMarker struct {
 	*canvas.Circle
 	cx, cy float64
-	r      float64
+	radius float64
 }
 
 func newSelectCircleHueMarker(w, h int) *selectCircleHueMarker {
+	fw := float64(w)
+	fh := float64(h)
 	marker := &selectCircleHueMarker{
 		Circle: &canvas.Circle{
 			FillColor:   markerFillColor,
 			StrokeColor: markerStrokeColor,
 			StrokeWidth: 2,
 		},
-		cx: float64(w) / 2,
-		cy: float64(h) / 2,
-		r:  (float64(w) / 10) / 2,
+		cx:     fw / 2,
+		cy:     fh / 2,
+		radius: (fw / 10) / 2,
 	}
-	markerCenter := fyne.NewPos(w-int(marker.r), h/2)
+	markerCenter := fyne.NewPos(int(round(fw-marker.radius)), int(round(fh/2)))
 	marker.updateMarkerPosition(markerCenter)
 	return marker
 }
@@ -92,20 +94,20 @@ func (m *selectCircleHueMarker) setCircleHueMarkerPosition(p fyne.Position) {
 	v := newVectorFromPoints(m.cx, m.cy, float64(p.X), float64(p.Y))
 	nv := v.normalize()
 	center := newVector(m.cx, m.cy)
-	markerCenter := center.add(nv.multiply(0.9 * m.cx)).toPosition()
+	markerCenter := center.add(nv.multiply(m.cx - m.radius)).toPosition()
 	m.updateMarkerPosition(markerCenter)
 }
 
 func (m *selectCircleHueMarker) setCircleHueMarekerPositionFromHue(hue float64) {
 	rad := -2 * math.Pi * hue
 	center := newVector(m.cx, m.cy)
-	dir := newVector(1, 0).rotate(rad).multiply(m.cx - m.r)
+	dir := newVector(1, 0).rotate(rad).multiply(m.cx - m.radius)
 	markerCenter := center.add(dir).toPosition()
 	m.updateMarkerPosition(markerCenter)
 }
 
 func (m *selectCircleHueMarker) updateMarkerPosition(p fyne.Position) {
-	r := int(m.r)
+	r := int(round(m.radius))
 	m.Circle.Position1 = fyne.NewPos(p.X-r, p.Y-r)
 	m.Circle.Position2 = fyne.NewPos(p.X+r, p.Y+r)
 }
