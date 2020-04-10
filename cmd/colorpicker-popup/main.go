@@ -13,6 +13,10 @@ import (
 	"github.com/lusingander/colorpicker"
 )
 
+var (
+	defaultColor = color.RGBA{0xff, 0x00, 0x00, 0xff}
+)
+
 func main() {
 	a := app.New()
 	w := a.NewWindow("color picker sample")
@@ -24,16 +28,12 @@ func main() {
 func createContainer(w fyne.Window) fyne.CanvasObject {
 	var current color.Color
 
-	selectColorCode := widget.NewLabelWithStyle("", fyne.TextAlignLeading, fyne.TextStyle{Monospace: true})
-	selectColorRect := &canvas.Rectangle{FillColor: current}
-	selectColorRect.SetMinSize(fyne.NewSize(30, 20))
+	displayColor := newDisplayColor()
 
 	picker := colorpicker.New(200, colorpicker.StyleDefault)
 	picker.SetOnChanged(func(c color.Color) {
 		current = c
-		selectColorCode.SetText(hexColorString(current))
-		selectColorRect.FillColor = current
-		selectColorRect.Refresh()
+		displayColor.setColor(current)
 	})
 	content := fyne.NewContainer(picker)
 
@@ -42,10 +42,8 @@ func createContainer(w fyne.Window) fyne.CanvasObject {
 		dialog.ShowCustom("Select color", "OK", content, w)
 	})
 
-	current = color.RGBA{0xff, 0x00, 0x00, 0xff}
-	selectColorCode.SetText(hexColorString(current))
-	selectColorRect.FillColor = current
-	selectColorRect.Refresh()
+	current = defaultColor
+	displayColor.setColor(current)
 
 	return fyne.NewContainerWithLayout(
 		layout.NewHBoxLayout(),
@@ -58,14 +56,35 @@ func createContainer(w fyne.Window) fyne.CanvasObject {
 			fyne.NewContainerWithLayout(
 				layout.NewHBoxLayout(),
 				layout.NewSpacer(),
-				selectColorCode,
-				selectColorRect,
+				displayColor.label,
+				displayColor.rect,
 				layout.NewSpacer(),
 			),
 			layout.NewSpacer(),
 		),
 		layout.NewSpacer(),
 	)
+}
+
+type displayColor struct {
+	label *widget.Label
+	rect  *canvas.Rectangle
+}
+
+func newDisplayColor() *displayColor {
+	selectColorCode := widget.NewLabelWithStyle("", fyne.TextAlignLeading, fyne.TextStyle{Monospace: true})
+	selectColorRect := &canvas.Rectangle{}
+	selectColorRect.SetMinSize(fyne.NewSize(30, 20))
+	return &displayColor{
+		label: selectColorCode,
+		rect:  selectColorRect,
+	}
+}
+
+func (c *displayColor) setColor(clr color.Color) {
+	c.label.SetText(hexColorString(clr))
+	c.rect.FillColor = clr
+	c.rect.Refresh()
 }
 
 func hexColorString(c color.Color) string {
