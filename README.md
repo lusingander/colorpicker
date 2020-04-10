@@ -6,6 +6,8 @@
 
 Color picker component for [Fyne](https://fyne.io/)
 
+<img src="./resource/popup.gif" width=300>
+
 ## Usage
 
 ```go
@@ -24,3 +26,9 @@ fyne.NewContainer(picker)
 [colorpicker/cmd/colorpicker/](./cmd/colorpicker/)
 
 <img src="./resource/image.png" width=500>
+
+----
+
+[colorpicker/cmd/colorpicker-popup/](./cmd/colorpicker-popup/)
+
+<img src="./resource/image2.png" width=400>
