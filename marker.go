@@ -100,6 +100,16 @@ func (m *selectCircleHueMarker) setCircleHueMarkerPosition(p fyne.Position) {
 	m.updateMarkerPosition(markerCenter)
 }
 
+func (m *selectCircleHueMarker) setCircleHueMarekerPositionFromHue(hue float64) {
+	rad := -2 * math.Pi * hue
+	center := newVector(m.cx, m.cy)
+	cos := math.Cos(rad)
+	sin := math.Sin(rad)
+	dir := newVector(cos, sin).multiply(m.cx - m.r)
+	markerCenter := center.add(dir).toPosition()
+	m.updateMarkerPosition(markerCenter)
+}
+
 func (m *selectCircleHueMarker) updateMarkerPosition(p fyne.Position) {
 	r := int(m.r)
 	m.Circle.Position1 = fyne.NewPos(p.X-r, p.Y-r)
