@@ -46,6 +46,12 @@ func (v *vector) toPosition() fyne.Position {
 	return fyne.NewPos(int(v.x), int(v.y))
 }
 
+func (v *vector) rotate(rad float64) *vector {
+	cos := math.Cos(rad)
+	sin := math.Sin(rad)
+	return &vector{cos*v.x - sin*v.y, sin*v.x + cos*v.y}
+}
+
 func distance(x1, y1, x2, y2 float64) float64 {
 	return math.Sqrt(square(x1-x2) + square(y1-y2))
 }
