@@ -28,7 +28,7 @@ type ColorPicker interface {
 func New(size int, style PickerStyle) ColorPicker {
 	switch style {
 	case StyleCircle:
-		return newCircleColorPicker(size)
+		return newCircleHueColorPicker(size)
 	default:
 		return newDefaultHueColorPicker(size)
 	}

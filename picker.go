@@ -153,7 +153,7 @@ type circleHueColorPicker struct {
 	*selectCircleMarker
 }
 
-func newCircleColorPicker(size int) ColorPicker {
+func newCircleHueColorPicker(size int) ColorPicker {
 	// pickerSize < ((areaWidth - (hueBarWidth * 2)) / √2)
 	pickerSize := fyne.NewSize(int(float64(size)*0.8/1.45), int(float64(size)*0.8/1.45))
 	hueSize := fyne.NewSize(size, size)
