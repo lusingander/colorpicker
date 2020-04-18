@@ -66,16 +66,16 @@ func (m *selectVerticalBarMarker) updateMarkerPosition(p fyne.Position) {
 	m.Circle.Position2 = fyne.NewPos(p.X+r, p.Y+r)
 }
 
-type selectCircleHueMarker struct {
+type selectCircleMarker struct {
 	*canvas.Circle
 	cx, cy float64
 	radius float64
 }
 
-func newSelectCircleHueMarker(w, h int) *selectCircleHueMarker {
+func newSelectCircleMarker(w, h int) *selectCircleMarker {
 	fw := float64(w)
 	fh := float64(h)
-	marker := &selectCircleHueMarker{
+	marker := &selectCircleMarker{
 		Circle: &canvas.Circle{
 			FillColor:   markerFillColor,
 			StrokeColor: markerStrokeColor,
@@ -90,7 +90,7 @@ func newSelectCircleHueMarker(w, h int) *selectCircleHueMarker {
 	return marker
 }
 
-func (m *selectCircleHueMarker) setCircleHueMarkerPosition(p fyne.Position) {
+func (m *selectCircleMarker) setCircleMarkerPosition(p fyne.Position) {
 	v := newVectorFromPoints(m.cx, m.cy, float64(p.X), float64(p.Y))
 	nv := v.normalize()
 	center := newVector(m.cx, m.cy)
@@ -98,7 +98,7 @@ func (m *selectCircleHueMarker) setCircleHueMarkerPosition(p fyne.Position) {
 	m.updateMarkerPosition(markerCenter)
 }
 
-func (m *selectCircleHueMarker) setCircleHueMarekerPositionFromHue(hue float64) {
+func (m *selectCircleMarker) setCircleMarekerPositionFromHue(hue float64) {
 	rad := -2 * math.Pi * hue
 	center := newVector(m.cx, m.cy)
 	dir := newVector(1, 0).rotate(rad).multiply(m.cx - m.radius)
@@ -106,13 +106,13 @@ func (m *selectCircleHueMarker) setCircleHueMarekerPositionFromHue(hue float64) 
 	m.updateMarkerPosition(markerCenter)
 }
 
-func (m *selectCircleHueMarker) updateMarkerPosition(p fyne.Position) {
+func (m *selectCircleMarker) updateMarkerPosition(p fyne.Position) {
 	r := int(round(m.radius))
 	m.Circle.Position1 = fyne.NewPos(p.X-r, p.Y-r)
 	m.Circle.Position2 = fyne.NewPos(p.X+r, p.Y+r)
 }
 
-func (m *selectCircleHueMarker) calcHueFromCircleMarker(p fyne.Position) float64 {
+func (m *selectCircleMarker) calcHueFromCircleMarker(p fyne.Position) float64 {
 	v := newVectorFromPoints(m.cx, m.cy, float64(p.X), float64(p.Y))
 	baseV := newVector(1, 0)
 	rad := math.Acos(baseV.dot(v) / (v.norm() * baseV.norm()))
