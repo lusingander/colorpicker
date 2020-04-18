@@ -27,16 +27,12 @@ func main() {
 }
 
 func createPickerContainer(height int, style colorpicker.PickerStyle) *fyne.Container {
-	selectColorCode := widget.NewLabelWithStyle("", fyne.TextAlignLeading, fyne.TextStyle{Monospace: true})
-	selectColorRect := &canvas.Rectangle{FillColor: color.RGBA{0, 0, 0, 0}}
-	selectColorRect.SetMinSize(fyne.NewSize(30, 20))
+	displayColor := newDisplayColor()
 
 	// Create picker
 	picker := colorpicker.New(height, style)
 	picker.SetOnChanged(func(c color.Color) {
-		selectColorCode.SetText(hexColorString(c))
-		selectColorRect.FillColor = c
-		selectColorRect.Refresh()
+		displayColor.setColor(c)
 	})
 
 	return fyne.NewContainerWithLayout(
@@ -45,12 +41,33 @@ func createPickerContainer(height int, style colorpicker.PickerStyle) *fyne.Cont
 		fyne.NewContainerWithLayout(
 			layout.NewHBoxLayout(),
 			layout.NewSpacer(),
-			selectColorCode,
-			selectColorRect,
+			displayColor.label,
+			displayColor.rect,
 			layout.NewSpacer(),
 		),
 		widget.NewLabel(styleName(style)),
 	)
+}
+
+type displayColor struct {
+	label *widget.Label
+	rect  *canvas.Rectangle
+}
+
+func newDisplayColor() *displayColor {
+	selectColorCode := widget.NewLabelWithStyle("", fyne.TextAlignLeading, fyne.TextStyle{Monospace: true})
+	selectColorRect := &canvas.Rectangle{FillColor: color.RGBA{0, 0, 0, 0}}
+	selectColorRect.SetMinSize(fyne.NewSize(30, 20))
+	return &displayColor{
+		label: selectColorCode,
+		rect:  selectColorRect,
+	}
+}
+
+func (c *displayColor) setColor(clr color.Color) {
+	c.label.SetText(hexColorString(clr))
+	c.rect.FillColor = clr
+	c.rect.Refresh()
 }
 
 func hexColorString(c color.Color) string {
