@@ -40,6 +40,17 @@ type defaultHueColorPicker struct {
 	*selectHueMarker
 }
 
+type circleHueColorPicker struct {
+	*colorPickerBase
+
+	pickerWidth    int
+	pickerHeight   int
+	hueCircleWidth int
+	hue            float64
+	*selectColorMarker
+	*selectCircleHueMarker
+}
+
 func (p *colorPicker) SetColor(c color.Color) {
 	h, s, v := fromColor(c)
 	p.hue = h
@@ -131,10 +142,29 @@ func (p *defaultHueColorPicker) updatePickerColor() {
 	p.changed(color)
 }
 
+func (p *circleHueColorPicker) updatePickerColor() {
+	x := p.selectColorMarker.center.X
+	y := p.selectColorMarker.center.Y
+	color := fromHSV(p.hue, float64(x)/float64(p.pickerWidth), 1.0-float64(y)/float64(p.pickerHeight))
+	p.changed(color)
+}
+
 func (p *defaultHueColorPicker) SetColor(c color.Color) {
 	h, s, v := fromColor(c)
 	p.hue = h
 	p.setHueMarkerPosition(int(float64(p.pickerHeight) * h))
+	p.colorPickerRaster.setPixelColor(createColorPickerPixelColor(p.hue))
+	p.colorPickerRaster.Refresh()
+	x := int(round(float64(p.pickerWidth) * s))
+	y := int(round(float64(p.pickerHeight) * (1.0 - v)))
+	p.setColorMarkerPosition(fyne.NewPos(x, y))
+	p.updatePickerColor()
+}
+
+func (p *circleHueColorPicker) SetColor(c color.Color) {
+	h, s, v := fromColor(c)
+	p.hue = h
+	p.setCircleHueMarekerPositionFromHue(p.hue)
 	p.colorPickerRaster.setPixelColor(createColorPickerPixelColor(p.hue))
 	p.colorPickerRaster.Refresh()
 	x := int(round(float64(p.pickerWidth) * s))
@@ -243,15 +273,17 @@ func newCircleColorPicker(size int) ColorPicker {
 	pickerSize := fyne.NewSize(int(float64(size)*0.8/1.45), int(float64(size)*0.8/1.45))
 	hueSize := fyne.NewSize(size, size)
 
-	picker := &colorPicker{
-		hue:     0,
-		changed: func(color.Color) {},
-		cw:      pickerSize.Width,
-		hw:      hueSize.Width,
-		h:       pickerSize.Height,
+	picker := &circleHueColorPicker{
+		hue:            0,
+		pickerWidth:    pickerSize.Width,
+		pickerHeight:   pickerSize.Height,
+		hueCircleWidth: hueSize.Width,
+		colorPickerBase: &colorPickerBase{
+			changed: func(color.Color) {},
+		},
 	}
 
-	colorPickerRaster := newTappableRaster(createColorPickerPixelColor(picker.hue))
+	colorPickerRaster := newTappableRaster(createSatularionValueColorPickerPixelColor(picker.hue))
 	colorPickerRaster.SetMinSize(pickerSize)
 	colorPickerRaster.tapped = func(p fyne.Position) {
 		picker.setColorMarkerPosition(p)
@@ -265,7 +297,7 @@ func newCircleColorPicker(size int) ColorPicker {
 	circleHuePickerRaster.SetMinSize(hueSize)
 	circleHuePickerRaster.tapped = func(p fyne.Position) {
 		picker.hue = picker.selectCircleHueMarker.calcHueFromCircleMarker(p)
-		colorPickerRaster.setPixelColor(createColorPickerPixelColor(picker.hue))
+		colorPickerRaster.setPixelColor(createSatularionValueColorPickerPixelColor(picker.hue))
 		colorPickerRaster.Refresh()
 		picker.setCircleHueMarkerPosition(p)
 		picker.updatePickerColor()
