@@ -67,7 +67,7 @@ type defaultHueColorPicker struct {
 	hueBarWidth  int
 	hue          float64
 	*selectColorMarker
-	*selectHueMarker
+	*selectVerticalBarMarker
 }
 
 func newDefaultHueColorPicker(size int) ColorPicker {
@@ -100,13 +100,13 @@ func newDefaultHueColorPicker(size int) ColorPicker {
 		picker.hue = float64(p.Y) / float64(hueSize.Height)
 		colorPickerRaster.setPixelColor(createSatularionValueColorPickerPixelColor(picker.hue))
 		colorPickerRaster.Refresh()
-		picker.setHueMarkerPosition(p.Y)
+		picker.setVerticalBarMarkerPosition(p.Y)
 		picker.updatePickerColor()
 	}
 	huePickerRaster.Resize(hueSize)
 
 	picker.selectColorMarker = newSelectColorMarker()
-	picker.selectHueMarker = newSelectHueMarker(hueSize.Width)
+	picker.selectVerticalBarMarker = newSelectVerticalBarMarker(hueSize.Width)
 
 	picker.CanvasObject = fyne.NewContainerWithLayout(
 		layout.NewVBoxLayout(),
@@ -115,7 +115,7 @@ func newDefaultHueColorPicker(size int) ColorPicker {
 			layout.NewHBoxLayout(),
 			layout.NewSpacer(),
 			fyne.NewContainer(colorPickerRaster, picker.selectColorMarker.Circle),
-			fyne.NewContainer(huePickerRaster, picker.selectHueMarker.Circle),
+			fyne.NewContainer(huePickerRaster, picker.selectVerticalBarMarker.Circle),
 			layout.NewSpacer(),
 		),
 		layout.NewSpacer(),
@@ -133,7 +133,7 @@ func (p *defaultHueColorPicker) updatePickerColor() {
 func (p *defaultHueColorPicker) SetColor(c color.Color) {
 	h, s, v := fromColor(c)
 	p.hue = h
-	p.setHueMarkerPosition(int(float64(p.pickerHeight) * h))
+	p.setVerticalBarMarkerPosition(int(float64(p.pickerHeight) * h))
 	p.colorPickerRaster.setPixelColor(createSatularionValueColorPickerPixelColor(p.hue))
 	p.colorPickerRaster.Refresh()
 	x := int(round(float64(p.pickerWidth) * s))

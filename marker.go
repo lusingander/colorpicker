@@ -38,13 +38,13 @@ func (m *selectColorMarker) setColorMarkerPosition(p fyne.Position) {
 	m.Position2 = fyne.NewPos(p.X+m.radius, p.Y+m.radius)
 }
 
-type selectHueMarker struct {
+type selectVerticalBarMarker struct {
 	*canvas.Circle
 	radius float64
 }
 
-func newSelectHueMarker(w int) *selectHueMarker {
-	marker := &selectHueMarker{
+func newSelectVerticalBarMarker(w int) *selectVerticalBarMarker {
+	marker := &selectVerticalBarMarker{
 		Circle: &canvas.Circle{
 			FillColor:   markerFillColor,
 			StrokeColor: markerStrokeColor,
@@ -52,15 +52,15 @@ func newSelectHueMarker(w int) *selectHueMarker {
 		},
 		radius: float64(w) / 2,
 	}
-	marker.setHueMarkerPosition(0)
+	marker.setVerticalBarMarkerPosition(0)
 	return marker
 }
 
-func (m *selectHueMarker) setHueMarkerPosition(h int) {
+func (m *selectVerticalBarMarker) setVerticalBarMarkerPosition(h int) {
 	m.updateMarkerPosition(fyne.NewPos(int(m.radius), h))
 }
 
-func (m *selectHueMarker) updateMarkerPosition(p fyne.Position) {
+func (m *selectVerticalBarMarker) updateMarkerPosition(p fyne.Position) {
 	r := int(round(m.radius))
 	m.Circle.Position1 = fyne.NewPos(p.X-r, p.Y-r)
 	m.Circle.Position2 = fyne.NewPos(p.X+r, p.Y+r)
