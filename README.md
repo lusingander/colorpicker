@@ -21,6 +21,10 @@ picker.SetOnChanged(func(c color.Color) {
 fyne.NewContainer(picker)
 ```
 
+## Documentation
+
+See [pkg.go.dev](https://pkg.go.dev/github.com/lusingander/colorpicker?tab=doc)
+
 ## Example
 
 [colorpicker/cmd/colorpicker/](./cmd/colorpicker/)
