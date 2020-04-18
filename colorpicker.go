@@ -30,6 +30,6 @@ func New(size int, style PickerStyle) ColorPicker {
 	case StyleCircle:
 		return newCircleColorPicker(size)
 	default:
-		return newColorPicker(size)
+		return newDefaultHueColorPicker(size)
 	}
 }
