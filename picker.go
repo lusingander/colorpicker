@@ -303,7 +303,19 @@ func newValueColorPicker(size int) ColorPicker {
 }
 
 func (p *valueColorPicker) SetColor(c color.Color) {
-	// TODO: impl
+	h, s, v := fromColor(c)
+	p.value = v
+	areaSize := float64(p.pickerRadius * 2)
+	p.setVerticalBarMarkerPosition(int(areaSize * (1.0 - p.value)))
+	p.colorPickerRaster.setPixelColor(createCircleHueSaturationColorPickerPixelColor(p.value))
+	p.colorPickerRaster.Refresh()
+
+	baseV := newVector(1, 0)
+	rad := -2 * math.Pi * h
+	vec := baseV.rotate(rad).multiply(float64(p.pickerRadius) * s)
+	center := newVector(float64(p.pickerCenter.X), float64(p.pickerCenter.Y))
+	p.setColorMarkerPosition(center.add(vec).toPosition())
+	p.updatePickerColor()
 }
 
 func (p *valueColorPicker) updatePickerColor() {
