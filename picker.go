@@ -292,23 +292,13 @@ func (p *valueColorPicker) SetColor(c color.Color) {
 }
 
 func (p *valueColorPicker) updatePickerColor() {
-	x := p.selectColorMarker.center.X
-	y := p.selectColorMarker.center.Y
-
-	fx := float64(x)
-	fy := float64(y)
-	cx := float64(p.pickerCenter.X)
-	cy := float64(p.pickerCenter.Y)
-
-	dist := distance(fx, fy, cx, cy)
-	rad := math.Atan((fx - cx) / (fy - cy))
-	rad += (math.Pi / 2)
-	if fy-cy >= 0 {
-		rad += math.Pi
-	}
-	hue := rad / (2 * math.Pi)
-	color := fromHSV(hue, dist/cx, p.value)
-
+	color := calcColorFromCirclePointAndValue(
+		float64(p.selectColorMarker.center.X),
+		float64(p.selectColorMarker.center.Y),
+		float64(p.pickerCenter.X),
+		float64(p.pickerCenter.Y),
+		p.value,
+	)
 	p.changed(color)
 }
 
@@ -380,25 +370,22 @@ func circleHuePickerFloat(x, y, w, h float64) color.Color {
 
 func createCircleHueSaturationColorPickerPixelColor(value float64) func(int, int, int, int) color.Color {
 	return func(x, y, w, h int) color.Color {
-		fx := float64(x)
-		fy := float64(y)
-		fw := float64(w)
-		fh := float64(h)
-		cx := fw / 2
-		cy := fh / 2
-
-		dist := distance(fx, fy, cx, cy)
-		if cx < dist {
-			return color.RGBA{0, 0, 0, 0}
-		}
-
-		rad := math.Atan((fx - cx) / (fy - cy))
-		rad += (math.Pi / 2)
-		if fy-cy >= 0 {
-			rad += math.Pi
-		}
-		hue := rad / (2 * math.Pi)
-
-		return fromHSV(hue, dist/cx, value)
+		return calcColorFromCirclePointAndValue(float64(x), float64(y), float64(w)/2., float64(h)/2., value)
 	}
+}
+
+func calcColorFromCirclePointAndValue(x, y, cx, cy, value float64) color.Color {
+	dist := distance(x, y, cx, cy)
+	if cx < dist {
+		return color.RGBA{0, 0, 0, 0}
+	}
+
+	rad := math.Atan((x - cx) / (y - cy))
+	rad += (math.Pi / 2)
+	if y-cy >= 0 {
+		rad += math.Pi
+	}
+	hue := rad / (2 * math.Pi)
+
+	return fromHSV(hue, dist/cx, value)
 }
