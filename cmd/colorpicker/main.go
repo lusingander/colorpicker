@@ -18,9 +18,16 @@ func main() {
 	w := a.NewWindow("color picker sample")
 
 	w.SetContent(fyne.NewContainerWithLayout(
-		layout.NewHBoxLayout(),
-		createPickerContainer(200, colorpicker.StyleDefault),
-		createPickerContainer(200, colorpicker.StyleCircle),
+		layout.NewVBoxLayout(),
+		fyne.NewContainerWithLayout(
+			layout.NewHBoxLayout(),
+			createPickerContainer(200, colorpicker.StyleDefault),
+			createPickerContainer(200, colorpicker.StyleCircle),
+		),
+		fyne.NewContainerWithLayout(
+			layout.NewHBoxLayout(),
+			createPickerContainer(200, colorpicker.StyleValue),
+		),
 	))
 
 	w.ShowAndRun()
@@ -76,8 +83,12 @@ func hexColorString(c color.Color) string {
 }
 
 func styleName(s colorpicker.PickerStyle) string {
-	if s == colorpicker.StyleCircle {
+	switch s {
+	case colorpicker.StyleCircle:
 		return "StyleCircle"
+	case colorpicker.StyleValue:
+		return "StyleValue"
+	default:
+		return "StyleDefault"
 	}
-	return "StyleDefault"
 }
