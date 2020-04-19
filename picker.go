@@ -235,6 +235,66 @@ func (p *circleHueColorPicker) SetColor(c color.Color) {
 	p.updatePickerColor()
 }
 
+type valueColorPicker struct {
+	*colorPickerBase
+
+	pickerRadius  int
+	pickerCenter  fyne.Position
+	valueBarWidth int
+	value         float64
+	*selectColorMarker
+	*selectVerticalBarMarker
+}
+
+func newValueColorPicker(size int) ColorPicker {
+	pickerSize := fyne.NewSize(size, size)
+	picker := &valueColorPicker{
+		value:         1.,
+		pickerRadius:  size / 2,
+		pickerCenter:  fyne.NewPos(size/2, size/2),
+		valueBarWidth: size / 10,
+		colorPickerBase: &colorPickerBase{
+			changed: func(color.Color) {},
+		},
+	}
+
+	colorPickerRaster := newTappableRaster(createCircleHueSaturationColorPickerPixelColor(picker.value))
+	colorPickerRaster.SetMinSize(pickerSize)
+	colorPickerRaster.tapped = func(p fyne.Position) {
+		if picker.isInPickerArea(p) {
+			picker.setColorMarkerPosition(p)
+			colorPickerRaster.Refresh()
+		}
+	}
+	colorPickerRaster.Resize(pickerSize) // Note: doesn't render if remove this line...
+	picker.colorPickerRaster = colorPickerRaster
+
+	picker.selectColorMarker = newSelectColorMarker()
+	picker.setColorMarkerPosition(picker.pickerCenter)
+
+	picker.CanvasObject = fyne.NewContainerWithLayout(
+		layout.NewVBoxLayout(),
+		layout.NewSpacer(),
+		fyne.NewContainerWithLayout(
+			layout.NewHBoxLayout(),
+			layout.NewSpacer(),
+			fyne.NewContainer(colorPickerRaster, picker.selectColorMarker.Circle),
+			layout.NewSpacer(),
+		),
+		layout.NewSpacer(),
+	)
+	return picker
+}
+
+func (p *valueColorPicker) SetColor(c color.Color) {
+	// TODO: impl
+}
+
+func (p *valueColorPicker) isInPickerArea(pos fyne.Position) bool {
+	d := distance(float64(pos.X), float64(pos.Y), float64(p.pickerCenter.X), float64(p.pickerCenter.Y))
+	return d <= float64(p.pickerRadius)
+}
+
 type colorPickerBaseWidgetRender struct {
 	picker *colorPickerBase
 }
@@ -294,4 +354,29 @@ func circleHuePickerFloat(x, y, w, h float64) color.Color {
 	hue := rad / (2 * math.Pi)
 
 	return fromHSV(hue, 1.0, 1.0)
+}
+
+func createCircleHueSaturationColorPickerPixelColor(value float64) func(int, int, int, int) color.Color {
+	return func(x, y, w, h int) color.Color {
+		fx := float64(x)
+		fy := float64(y)
+		fw := float64(w)
+		fh := float64(h)
+		cx := fw / 2
+		cy := fh / 2
+
+		dist := distance(fx, fy, cx, cy)
+		if cx < dist {
+			return color.RGBA{0, 0, 0, 0}
+		}
+
+		rad := math.Atan((fx - cx) / (fy - cy))
+		rad += (math.Pi / 2)
+		if fy-cy >= 0 {
+			rad += math.Pi
+		}
+		hue := rad / (2 * math.Pi)
+
+		return fromHSV(hue, dist/cx, value)
+	}
 }
