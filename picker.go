@@ -263,6 +263,7 @@ func newValueColorPicker(size int) ColorPicker {
 	colorPickerRaster.tapped = func(p fyne.Position) {
 		if picker.isInPickerArea(p) {
 			picker.setColorMarkerPosition(p)
+			picker.updatePickerColor()
 			colorPickerRaster.Refresh()
 		}
 	}
@@ -288,6 +289,27 @@ func newValueColorPicker(size int) ColorPicker {
 
 func (p *valueColorPicker) SetColor(c color.Color) {
 	// TODO: impl
+}
+
+func (p *valueColorPicker) updatePickerColor() {
+	x := p.selectColorMarker.center.X
+	y := p.selectColorMarker.center.Y
+
+	fx := float64(x)
+	fy := float64(y)
+	cx := float64(p.pickerCenter.X)
+	cy := float64(p.pickerCenter.Y)
+
+	dist := distance(fx, fy, cx, cy)
+	rad := math.Atan((fx - cx) / (fy - cy))
+	rad += (math.Pi / 2)
+	if fy-cy >= 0 {
+		rad += math.Pi
+	}
+	hue := rad / (2 * math.Pi)
+	color := fromHSV(hue, dist/cx, p.value)
+
+	p.changed(color)
 }
 
 func (p *valueColorPicker) isInPickerArea(pos fyne.Position) bool {
