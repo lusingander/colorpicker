@@ -248,6 +248,8 @@ type valueColorPicker struct {
 
 func newValueColorPicker(size int) ColorPicker {
 	pickerSize := fyne.NewSize(size, size)
+	valueSize := fyne.NewSize(size/10, size)
+
 	picker := &valueColorPicker{
 		value:         1.,
 		pickerRadius:  size / 2,
@@ -270,8 +272,20 @@ func newValueColorPicker(size int) ColorPicker {
 	colorPickerRaster.Resize(pickerSize) // Note: doesn't render if remove this line...
 	picker.colorPickerRaster = colorPickerRaster
 
+	valuePickerRaster := newTappableRaster(valueBarPicker)
+	valuePickerRaster.SetMinSize(valueSize)
+	valuePickerRaster.tapped = func(p fyne.Position) {
+		picker.value = 1.0 - (float64(p.Y) / float64(valueSize.Height))
+		colorPickerRaster.setPixelColor(createCircleHueSaturationColorPickerPixelColor(picker.value))
+		colorPickerRaster.Refresh()
+		picker.setVerticalBarMarkerPosition(p.Y)
+		picker.updatePickerColor()
+	}
+	valuePickerRaster.Resize(valueSize)
+
 	picker.selectColorMarker = newSelectColorMarker()
 	picker.setColorMarkerPosition(picker.pickerCenter)
+	picker.selectVerticalBarMarker = newSelectVerticalBarMarker(valueSize.Width)
 
 	picker.CanvasObject = fyne.NewContainerWithLayout(
 		layout.NewVBoxLayout(),
@@ -280,6 +294,7 @@ func newValueColorPicker(size int) ColorPicker {
 			layout.NewHBoxLayout(),
 			layout.NewSpacer(),
 			fyne.NewContainer(colorPickerRaster, picker.selectColorMarker.Circle),
+			fyne.NewContainer(valuePickerRaster, picker.selectVerticalBarMarker.Circle),
 			layout.NewSpacer(),
 		),
 		layout.NewSpacer(),
@@ -388,4 +403,8 @@ func calcColorFromCirclePointAndValue(x, y, cx, cy, value float64) color.Color {
 	hue := rad / (2 * math.Pi)
 
 	return fromHSV(hue, dist/cx, value)
+}
+
+func valueBarPicker(x, y, w, h int) color.Color {
+	return fromHSV(0.0, 0.0, 1.0-float64(y)/float64(h))
 }
