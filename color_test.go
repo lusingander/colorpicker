@@ -80,15 +80,18 @@ func TestFromColor(t *testing.T) {
 }
 
 func TestFromColorAndFromHSV(t *testing.T) {
+	wants := make([]color.Color, 0, 256*256*256)
 	for r := 0; r <= 255; r++ {
 		for g := 0; g <= 255; g++ {
 			for b := 0; b <= 255; b++ {
-				want := color.RGBA{R: uint8(r), G: uint8(g), B: uint8(b), A: 0xff}
-				got := *fromHSV(fromColor(want))
-				if want != got {
-					t.Errorf("fromHSV(fromColor(%v)) = %v", want, got)
-				}
+				wants = append(wants, color.RGBA{R: uint8(r), G: uint8(g), B: uint8(b), A: 0xff})
 			}
+		}
+	}
+	for _, want := range wants {
+		got := *fromHSV(fromColor(want))
+		if want != got {
+			t.Errorf("fromHSV(fromColor(%v)) = %v", want, got)
 		}
 	}
 }
