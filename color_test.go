@@ -6,6 +6,10 @@ import (
 	"testing"
 )
 
+const (
+	floatThreshold = 0.001
+)
+
 func TestFromHSV(t *testing.T) {
 	tests := []struct {
 		h, s, v float64
@@ -97,5 +101,5 @@ func TestFromColorAndFromHSV(t *testing.T) {
 }
 
 func notEquals(f1, f2 float64) bool {
-	return math.Abs(f1-f2) > 0.001
+	return math.Abs(f1-f2) > floatThreshold
 }
