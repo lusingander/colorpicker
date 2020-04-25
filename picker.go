@@ -244,6 +244,7 @@ type valueColorPicker struct {
 	value         float64
 	*selectColorMarker
 	*selectVerticalBarMarker
+	valuePickerRaster *tappableRaster
 }
 
 func newValueColorPicker(size int) ColorPicker {
@@ -272,7 +273,7 @@ func newValueColorPicker(size int) ColorPicker {
 	colorPickerRaster.Resize(pickerSize) // Note: doesn't render if remove this line...
 	picker.colorPickerRaster = colorPickerRaster
 
-	valuePickerRaster := newTappableRaster(valueBarPicker)
+	valuePickerRaster := newTappableRaster(createValueBarPicker(0., 0.))
 	valuePickerRaster.SetMinSize(valueSize)
 	valuePickerRaster.tapped = func(p fyne.Position) {
 		picker.value = 1.0 - (float64(p.Y) / float64(valueSize.Height))
@@ -282,6 +283,7 @@ func newValueColorPicker(size int) ColorPicker {
 		picker.updatePickerColor()
 	}
 	valuePickerRaster.Resize(valueSize)
+	picker.valuePickerRaster = valuePickerRaster
 
 	picker.selectColorMarker = newSelectColorMarker()
 	picker.setColorMarkerPosition(picker.pickerCenter)
@@ -327,6 +329,13 @@ func (p *valueColorPicker) updatePickerColor() {
 		p.value,
 	)
 	p.changed(color)
+
+	// TODO: should not recalculate...
+	h, s, v := fromColor(color)
+	if v > 0 {
+		p.valuePickerRaster.setPixelColor(createValueBarPicker(h, s))
+		p.valuePickerRaster.Refresh()
+	}
 }
 
 func (p *valueColorPicker) isInPickerArea(pos fyne.Position) bool {
@@ -417,6 +426,8 @@ func calcColorFromCirclePointAndValue(x, y, cx, cy, value float64) color.Color {
 	return fromHSV(hue, dist/cx, value)
 }
 
-func valueBarPicker(x, y, w, h int) color.Color {
-	return fromHSV(0.0, 0.0, 1.0-float64(y)/float64(h))
+func createValueBarPicker(hue, saturation float64) func(x, y, w, h int) color.Color {
+	return func(x, y, w, h int) color.Color {
+		return fromHSV(hue, saturation, 1.0-float64(y)/float64(h))
+	}
 }
