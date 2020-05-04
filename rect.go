@@ -18,6 +18,7 @@ const (
 type PickerOpenWidget interface {
 	fyne.CanvasObject
 
+	SetColor(color.Color)
 	SetOnChange(f func(color.Color))
 	SetPickerStyle(s PickerStyle)
 }
@@ -47,6 +48,10 @@ func (r *colorSelectModalRect) SetOnChange(f func(color.Color)) {
 
 func (r *colorSelectModalRect) SetPickerStyle(s PickerStyle) {
 	r.pickerStyle = s
+}
+
+func (r *colorSelectModalRect) SetColor(c color.Color) {
+	r.setColor(c)
 }
 
 func (r *colorSelectModalRect) tapped(e *fyne.PointEvent) {
