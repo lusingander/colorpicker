@@ -10,6 +10,10 @@ import (
 	"fyne.io/fyne/widget"
 )
 
+const (
+	colorSelectModalPickerDefaultSize = 200
+)
+
 // PickerOpenWidget represents a widget that can open a color picker.
 type PickerOpenWidget interface {
 	fyne.CanvasObject
@@ -46,7 +50,7 @@ func (r *colorSelectModalRect) SetPickerStyle(s PickerStyle) {
 }
 
 func (r *colorSelectModalRect) tapped(e *fyne.PointEvent) {
-	picker := New(200, r.pickerStyle)
+	picker := New(colorSelectModalPickerDefaultSize, r.pickerStyle)
 	picker.SetColor(r.color())
 	picker.SetOnChanged(func(c color.Color) {
 		if r.onChange != nil {
