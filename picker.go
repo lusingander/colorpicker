@@ -9,6 +9,10 @@ import (
 	"fyne.io/fyne/theme"
 )
 
+var (
+	transparent = color.RGBA{0, 0, 0, 0}
+)
+
 type colorPickerBase struct {
 	fyne.CanvasObject
 	colorPickerRaster *tappableRaster
@@ -391,7 +395,7 @@ func circleHuePickerFloat(x, y, w, h float64) color.Color {
 
 	dist := distance(x, y, cx, cy)
 	if dist < ir || or < dist {
-		return color.RGBA{0, 0, 0, 0}
+		return transparent
 	}
 
 	rad := math.Atan((x - cx) / (y - cy))
@@ -413,7 +417,7 @@ func createCircleHueSaturationColorPickerPixelColor(value float64) func(int, int
 func calcColorFromCirclePointAndValue(x, y, cx, cy, value float64) color.Color {
 	dist := distance(x, y, cx, cy)
 	if cx < dist {
-		return color.RGBA{0, 0, 0, 0}
+		return transparent
 	}
 
 	rad := math.Atan((x - cx) / (y - cy))
