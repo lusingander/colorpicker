@@ -13,6 +13,10 @@ import (
 	"github.com/lusingander/colorpicker"
 )
 
+var (
+	defaultColor = color.RGBA{0xff, 0x00, 0x00, 0xff}
+)
+
 func main() {
 	a := app.New()
 	w := a.NewWindow("color picker sample")
@@ -41,6 +45,7 @@ func createPickerContainer(height int, style colorpicker.PickerStyle) *fyne.Cont
 	picker.SetOnChanged(func(c color.Color) {
 		displayColor.setColor(c)
 	})
+	picker.SetColor(defaultColor)
 
 	return fyne.NewContainerWithLayout(
 		layout.NewVBoxLayout(),
