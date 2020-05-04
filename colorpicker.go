@@ -26,7 +26,7 @@ type ColorPicker interface {
 	SetOnChanged(func(color.Color))
 }
 
-// New returns color picker conrainer.
+// New returns color picker container.
 func New(size int, style PickerStyle) ColorPicker {
 	switch style {
 	case StyleCircle:
