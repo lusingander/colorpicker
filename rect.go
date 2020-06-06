@@ -6,6 +6,7 @@ import (
 	"fyne.io/fyne"
 	"fyne.io/fyne/canvas"
 	"fyne.io/fyne/dialog"
+	"fyne.io/fyne/driver/desktop"
 	"fyne.io/fyne/theme"
 	"fyne.io/fyne/widget"
 )
@@ -65,6 +66,10 @@ func (r *colorSelectModalRect) tapped(e *fyne.PointEvent) {
 	})
 
 	dialog.ShowCustom("Select color", "OK", fyne.NewContainer(picker), r.parent)
+}
+
+func (r *colorSelectModalRect) Cursor() desktop.Cursor {
+	return desktop.PointerCursor
 }
 
 type tappableRect struct {
