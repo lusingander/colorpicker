@@ -7,6 +7,7 @@ import (
 
 	"fyne.io/fyne"
 	"fyne.io/fyne/canvas"
+	"fyne.io/fyne/driver/desktop"
 	"fyne.io/fyne/theme"
 	"fyne.io/fyne/widget"
 )
@@ -71,6 +72,10 @@ func (r *tappableRaster) Dragged(e *fyne.DragEvent) {
 }
 
 func (r *tappableRaster) DragEnd() {}
+
+func (r *tappableRaster) Cursor() desktop.Cursor {
+	return desktop.CrosshairCursor
+}
 
 func (r *tappableRaster) isOnRaster(p fyne.Position) bool {
 	return 0 <= p.X && p.X <= r.Size().Width && 0 <= p.Y && p.Y <= r.Size().Height
