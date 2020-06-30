@@ -398,11 +398,8 @@ func circleHuePickerFloat(x, y, w, h float64) color.Color {
 		return transparent
 	}
 
-	rad := math.Atan((x - cx) / (y - cy))
-	rad += (math.Pi / 2)
-	if y-cy >= 0 {
-		rad += math.Pi
-	}
+	rad := math.Atan2(y-cy, cx-x)
+	rad += math.Pi
 	hue := rad / (2 * math.Pi)
 
 	return fromHSV(hue, 1.0, 1.0)
@@ -420,11 +417,8 @@ func calcColorFromCirclePointAndValue(x, y, cx, cy, value float64) color.Color {
 		return transparent
 	}
 
-	rad := math.Atan((x - cx) / (y - cy))
-	rad += (math.Pi / 2)
-	if y-cy >= 0 {
-		rad += math.Pi
-	}
+	rad := math.Atan2(y-cy, cx-x)
+	rad += math.Pi
 	hue := rad / (2 * math.Pi)
 
 	return fromHSV(hue, dist/cx, value)
