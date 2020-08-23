@@ -113,17 +113,9 @@ func newDefaultHueColorPicker(size int) ColorPicker {
 	picker.barMarker = newMarker(picker.hueBarCenter(), 2)
 	picker.barMarker.setPosition(fyne.NewPos(int(picker.hueBarCenter()), 0))
 
-	picker.CanvasObject = fyne.NewContainerWithLayout(
-		layout.NewVBoxLayout(),
-		layout.NewSpacer(),
-		fyne.NewContainerWithLayout(
-			layout.NewHBoxLayout(),
-			layout.NewSpacer(),
-			fyne.NewContainer(colorPickerRaster, picker.colorMarker.Circle),
-			fyne.NewContainer(huePickerRaster, picker.barMarker.Circle),
-			layout.NewSpacer(),
-		),
-		layout.NewSpacer(),
+	picker.CanvasObject = newSpaceCenteredLayout(
+		fyne.NewContainer(colorPickerRaster, picker.colorMarker.Circle),
+		fyne.NewContainer(huePickerRaster, picker.barMarker.Circle),
 	)
 	return picker
 }
@@ -203,26 +195,18 @@ func newCircleHueColorPicker(size int) ColorPicker {
 	picker.colorMarker = newMarker(5, 1)
 	picker.hueMarker = newCircleBarMarker(hueSize.Width, hueSize.Height, picker.cirlceHueBarWidth())
 
-	picker.CanvasObject = fyne.NewContainerWithLayout(
-		layout.NewVBoxLayout(),
-		layout.NewSpacer(),
+	picker.CanvasObject = newSpaceCenteredLayout(
 		fyne.NewContainerWithLayout(
-			layout.NewHBoxLayout(),
-			layout.NewSpacer(),
-			fyne.NewContainerWithLayout(
-				layout.NewCenterLayout(),
-				fyne.NewContainer(
-					circleHuePickerRaster,
-					picker.hueMarker.Circle,
-				),
-				fyne.NewContainer(
-					colorPickerRaster,
-					picker.colorMarker.Circle,
-				),
+			layout.NewCenterLayout(),
+			fyne.NewContainer(
+				circleHuePickerRaster,
+				picker.hueMarker.Circle,
 			),
-			layout.NewSpacer(),
+			fyne.NewContainer(
+				colorPickerRaster,
+				picker.colorMarker.Circle,
+			),
 		),
-		layout.NewSpacer(),
 	)
 	return picker
 }
@@ -305,17 +289,9 @@ func newValueColorPicker(size int) ColorPicker {
 	picker.barMarker = newMarker(picker.valueBarCenter(), 2)
 	picker.barMarker.setPosition(fyne.NewPos(int(picker.valueBarCenter()), 0))
 
-	picker.CanvasObject = fyne.NewContainerWithLayout(
-		layout.NewVBoxLayout(),
-		layout.NewSpacer(),
-		fyne.NewContainerWithLayout(
-			layout.NewHBoxLayout(),
-			layout.NewSpacer(),
-			fyne.NewContainer(colorPickerRaster, picker.colorMarker.Circle),
-			fyne.NewContainer(valuePickerRaster, picker.barMarker.Circle),
-			layout.NewSpacer(),
-		),
-		layout.NewSpacer(),
+	picker.CanvasObject = newSpaceCenteredLayout(
+		fyne.NewContainer(colorPickerRaster, picker.colorMarker.Circle),
+		fyne.NewContainer(valuePickerRaster, picker.barMarker.Circle),
 	)
 	return picker
 }
@@ -444,4 +420,26 @@ func createValueBarPicker(hue, saturation float64) func(x, y, w, h int) color.Co
 	return func(x, y, w, h int) color.Color {
 		return fromHSV(hue, saturation, 1.0-float64(y)/float64(h))
 	}
+}
+
+func newSpaceCenteredLayout(objects ...fyne.CanvasObject) *fyne.Container {
+	l := newSpecedLayout(
+		layout.NewVBoxLayout(),
+		newSpecedLayout(
+			layout.NewHBoxLayout(),
+			objects...,
+		),
+	)
+	l.Resize(l.MinSize())
+	return l
+}
+
+func newSpecedLayout(l fyne.Layout, objects ...fyne.CanvasObject) *fyne.Container {
+	c := fyne.NewContainerWithLayout(l)
+	c.AddObject(layout.NewSpacer())
+	for _, o := range objects {
+		c.AddObject(o)
+	}
+	c.AddObject(layout.NewSpacer())
+	return c
 }
