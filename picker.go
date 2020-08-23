@@ -71,7 +71,7 @@ type defaultHueColorPicker struct {
 	hueBarWidth  int
 	hue          float64
 	colorMarker  *marker
-	*selectVerticalBarMarker
+	barMarker    *marker
 }
 
 func newDefaultHueColorPicker(size int) ColorPicker {
@@ -104,13 +104,14 @@ func newDefaultHueColorPicker(size int) ColorPicker {
 		picker.hue = float64(p.Y) / float64(hueSize.Height)
 		colorPickerRaster.setPixelColor(createSaturationValueColorPickerPixelColor(picker.hue))
 		colorPickerRaster.Refresh()
-		picker.setVerticalBarMarkerPosition(p.Y)
+		picker.barMarker.setPositionY(p.Y)
 		picker.updatePickerColor()
 	}
 	huePickerRaster.Resize(hueSize)
 
-	picker.colorMarker = newSelectColorMarker()
-	picker.selectVerticalBarMarker = newSelectVerticalBarMarker(hueSize.Width)
+	picker.colorMarker = newMarker(5, 1)
+	picker.barMarker = newMarker(picker.hueBarCenter(), 2)
+	picker.barMarker.setPosition(fyne.NewPos(int(picker.hueBarCenter()), 0))
 
 	picker.CanvasObject = fyne.NewContainerWithLayout(
 		layout.NewVBoxLayout(),
@@ -119,7 +120,7 @@ func newDefaultHueColorPicker(size int) ColorPicker {
 			layout.NewHBoxLayout(),
 			layout.NewSpacer(),
 			fyne.NewContainer(colorPickerRaster, picker.colorMarker.Circle),
-			fyne.NewContainer(huePickerRaster, picker.selectVerticalBarMarker.Circle),
+			fyne.NewContainer(huePickerRaster, picker.barMarker.Circle),
 			layout.NewSpacer(),
 		),
 		layout.NewSpacer(),
@@ -137,13 +138,17 @@ func (p *defaultHueColorPicker) updatePickerColor() {
 func (p *defaultHueColorPicker) SetColor(c color.Color) {
 	h, s, v := fromColor(c)
 	p.hue = h
-	p.setVerticalBarMarkerPosition(int(float64(p.pickerHeight) * h))
+	p.barMarker.setPositionY(int(float64(p.pickerHeight) * h))
 	p.colorPickerRaster.setPixelColor(createSaturationValueColorPickerPixelColor(p.hue))
 	p.colorPickerRaster.Refresh()
 	x := int(round(float64(p.pickerWidth) * s))
 	y := int(round(float64(p.pickerHeight) * (1.0 - v)))
 	p.colorMarker.setPosition(fyne.NewPos(x, y))
 	p.updatePickerColor()
+}
+
+func (p *defaultHueColorPicker) hueBarCenter() float64 {
+	return float64(p.hueBarWidth) / 2
 }
 
 type circleHueColorPicker struct {
@@ -193,7 +198,7 @@ func newCircleHueColorPicker(size int) ColorPicker {
 	}
 	circleHuePickerRaster.Resize(hueSize)
 
-	picker.colorMarker = newSelectColorMarker()
+	picker.colorMarker = newMarker(5, 1)
 	picker.selectCircleMarker = newSelectCircleMarker(hueSize.Width, hueSize.Height)
 
 	picker.CanvasObject = fyne.NewContainerWithLayout(
@@ -242,12 +247,12 @@ func (p *circleHueColorPicker) SetColor(c color.Color) {
 type valueColorPicker struct {
 	*colorPickerBase
 
-	pickerRadius  int
-	pickerCenter  fyne.Position
-	valueBarWidth int
-	value         float64
-	colorMarker   *marker
-	*selectVerticalBarMarker
+	pickerRadius      int
+	pickerCenter      fyne.Position
+	valueBarWidth     int
+	value             float64
+	colorMarker       *marker
+	barMarker         *marker
 	valuePickerRaster *tappableRaster
 }
 
@@ -283,15 +288,16 @@ func newValueColorPicker(size int) ColorPicker {
 		picker.value = 1.0 - (float64(p.Y) / float64(valueSize.Height))
 		colorPickerRaster.setPixelColor(createCircleHueSaturationColorPickerPixelColor(picker.value))
 		colorPickerRaster.Refresh()
-		picker.setVerticalBarMarkerPosition(p.Y)
+		picker.barMarker.setPositionY(p.Y)
 		picker.updatePickerColor()
 	}
 	valuePickerRaster.Resize(valueSize)
 	picker.valuePickerRaster = valuePickerRaster
 
-	picker.colorMarker = newSelectColorMarker()
+	picker.colorMarker = newMarker(5, 1)
 	picker.colorMarker.setPosition(picker.pickerCenter)
-	picker.selectVerticalBarMarker = newSelectVerticalBarMarker(valueSize.Width)
+	picker.barMarker = newMarker(picker.valueBarCenter(), 2)
+	picker.barMarker.setPosition(fyne.NewPos(int(picker.valueBarCenter()), 0))
 
 	picker.CanvasObject = fyne.NewContainerWithLayout(
 		layout.NewVBoxLayout(),
@@ -300,7 +306,7 @@ func newValueColorPicker(size int) ColorPicker {
 			layout.NewHBoxLayout(),
 			layout.NewSpacer(),
 			fyne.NewContainer(colorPickerRaster, picker.colorMarker.Circle),
-			fyne.NewContainer(valuePickerRaster, picker.selectVerticalBarMarker.Circle),
+			fyne.NewContainer(valuePickerRaster, picker.barMarker.Circle),
 			layout.NewSpacer(),
 		),
 		layout.NewSpacer(),
@@ -312,7 +318,7 @@ func (p *valueColorPicker) SetColor(c color.Color) {
 	h, s, v := fromColor(c)
 	p.value = v
 	areaSize := float64(p.pickerRadius * 2)
-	p.setVerticalBarMarkerPosition(int(areaSize * (1.0 - p.value)))
+	p.barMarker.setPositionY(int(areaSize * (1.0 - p.value)))
 	p.colorPickerRaster.setPixelColor(createCircleHueSaturationColorPickerPixelColor(p.value))
 	p.colorPickerRaster.Refresh()
 
@@ -345,6 +351,10 @@ func (p *valueColorPicker) updatePickerColor() {
 func (p *valueColorPicker) isInPickerArea(pos fyne.Position) bool {
 	d := distance(float64(pos.X), float64(pos.Y), float64(p.pickerCenter.X), float64(p.pickerCenter.Y))
 	return d <= float64(p.pickerRadius)
+}
+
+func (p *valueColorPicker) valueBarCenter() float64 {
+	return float64(p.valueBarWidth) / 2
 }
 
 type colorPickerBaseWidgetRender struct {
