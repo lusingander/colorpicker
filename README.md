@@ -27,11 +27,19 @@ See [pkg.go.dev](https://pkg.go.dev/github.com/lusingander/colorpicker?tab=doc)
 
 ## Example
 
+### colorpicker
+
+You can see all the styles implemented.
+
 [colorpicker/cmd/colorpicker/](./cmd/colorpicker/)
 
 <img src="./resource/image.png" width=500>
 
 ----
+
+### colorpicker-popup
+
+Example of embedding in Fyne's custom dialog.
 
 [colorpicker/cmd/colorpicker-popup/](./cmd/colorpicker-popup/)
 
