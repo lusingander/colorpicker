@@ -70,7 +70,7 @@ type defaultHueColorPicker struct {
 	pickerHeight int
 	hueBarWidth  int
 	hue          float64
-	*selectColorMarker
+	colorMarker  *marker
 	*selectVerticalBarMarker
 }
 
@@ -91,7 +91,7 @@ func newDefaultHueColorPicker(size int) ColorPicker {
 	colorPickerRaster := newTappableRaster(createSaturationValueColorPickerPixelColor(picker.hue))
 	colorPickerRaster.SetMinSize(pickerSize)
 	colorPickerRaster.tapped = func(p fyne.Position) {
-		picker.setColorMarkerPosition(p)
+		picker.colorMarker.setPosition(p)
 		picker.updatePickerColor()
 		colorPickerRaster.Refresh()
 	}
@@ -109,7 +109,7 @@ func newDefaultHueColorPicker(size int) ColorPicker {
 	}
 	huePickerRaster.Resize(hueSize)
 
-	picker.selectColorMarker = newSelectColorMarker()
+	picker.colorMarker = newSelectColorMarker()
 	picker.selectVerticalBarMarker = newSelectVerticalBarMarker(hueSize.Width)
 
 	picker.CanvasObject = fyne.NewContainerWithLayout(
@@ -118,7 +118,7 @@ func newDefaultHueColorPicker(size int) ColorPicker {
 		fyne.NewContainerWithLayout(
 			layout.NewHBoxLayout(),
 			layout.NewSpacer(),
-			fyne.NewContainer(colorPickerRaster, picker.selectColorMarker.Circle),
+			fyne.NewContainer(colorPickerRaster, picker.colorMarker.Circle),
 			fyne.NewContainer(huePickerRaster, picker.selectVerticalBarMarker.Circle),
 			layout.NewSpacer(),
 		),
@@ -128,8 +128,8 @@ func newDefaultHueColorPicker(size int) ColorPicker {
 }
 
 func (p *defaultHueColorPicker) updatePickerColor() {
-	x := p.selectColorMarker.center.X
-	y := p.selectColorMarker.center.Y
+	x := p.colorMarker.center.X
+	y := p.colorMarker.center.Y
 	color := fromHSV(p.hue, float64(x)/float64(p.pickerWidth), 1.0-float64(y)/float64(p.pickerHeight))
 	p.changed(color)
 }
@@ -142,7 +142,7 @@ func (p *defaultHueColorPicker) SetColor(c color.Color) {
 	p.colorPickerRaster.Refresh()
 	x := int(round(float64(p.pickerWidth) * s))
 	y := int(round(float64(p.pickerHeight) * (1.0 - v)))
-	p.setColorMarkerPosition(fyne.NewPos(x, y))
+	p.colorMarker.setPosition(fyne.NewPos(x, y))
 	p.updatePickerColor()
 }
 
@@ -153,7 +153,7 @@ type circleHueColorPicker struct {
 	pickerHeight   int
 	hueCircleWidth int
 	hue            float64
-	*selectColorMarker
+	colorMarker    *marker
 	*selectCircleMarker
 }
 
@@ -175,7 +175,7 @@ func newCircleHueColorPicker(size int) ColorPicker {
 	colorPickerRaster := newTappableRaster(createSaturationValueColorPickerPixelColor(picker.hue))
 	colorPickerRaster.SetMinSize(pickerSize)
 	colorPickerRaster.tapped = func(p fyne.Position) {
-		picker.setColorMarkerPosition(p)
+		picker.colorMarker.setPosition(p)
 		picker.updatePickerColor()
 		colorPickerRaster.Refresh()
 	}
@@ -193,7 +193,7 @@ func newCircleHueColorPicker(size int) ColorPicker {
 	}
 	circleHuePickerRaster.Resize(hueSize)
 
-	picker.selectColorMarker = newSelectColorMarker()
+	picker.colorMarker = newSelectColorMarker()
 	picker.selectCircleMarker = newSelectCircleMarker(hueSize.Width, hueSize.Height)
 
 	picker.CanvasObject = fyne.NewContainerWithLayout(
@@ -210,7 +210,7 @@ func newCircleHueColorPicker(size int) ColorPicker {
 				),
 				fyne.NewContainer(
 					colorPickerRaster,
-					picker.selectColorMarker.Circle,
+					picker.colorMarker.Circle,
 				),
 			),
 			layout.NewSpacer(),
@@ -221,8 +221,8 @@ func newCircleHueColorPicker(size int) ColorPicker {
 }
 
 func (p *circleHueColorPicker) updatePickerColor() {
-	x := p.selectColorMarker.center.X
-	y := p.selectColorMarker.center.Y
+	x := p.colorMarker.center.X
+	y := p.colorMarker.center.Y
 	color := fromHSV(p.hue, float64(x)/float64(p.pickerWidth), 1.0-float64(y)/float64(p.pickerHeight))
 	p.changed(color)
 }
@@ -235,7 +235,7 @@ func (p *circleHueColorPicker) SetColor(c color.Color) {
 	p.colorPickerRaster.Refresh()
 	x := int(round(float64(p.pickerWidth) * s))
 	y := int(round(float64(p.pickerHeight) * (1.0 - v)))
-	p.setColorMarkerPosition(fyne.NewPos(x, y))
+	p.colorMarker.setPosition(fyne.NewPos(x, y))
 	p.updatePickerColor()
 }
 
@@ -246,7 +246,7 @@ type valueColorPicker struct {
 	pickerCenter  fyne.Position
 	valueBarWidth int
 	value         float64
-	*selectColorMarker
+	colorMarker   *marker
 	*selectVerticalBarMarker
 	valuePickerRaster *tappableRaster
 }
@@ -269,7 +269,7 @@ func newValueColorPicker(size int) ColorPicker {
 	colorPickerRaster.SetMinSize(pickerSize)
 	colorPickerRaster.tapped = func(p fyne.Position) {
 		if picker.isInPickerArea(p) {
-			picker.setColorMarkerPosition(p)
+			picker.colorMarker.setPosition(p)
 			picker.updatePickerColor()
 			colorPickerRaster.Refresh()
 		}
@@ -289,8 +289,8 @@ func newValueColorPicker(size int) ColorPicker {
 	valuePickerRaster.Resize(valueSize)
 	picker.valuePickerRaster = valuePickerRaster
 
-	picker.selectColorMarker = newSelectColorMarker()
-	picker.setColorMarkerPosition(picker.pickerCenter)
+	picker.colorMarker = newSelectColorMarker()
+	picker.colorMarker.setPosition(picker.pickerCenter)
 	picker.selectVerticalBarMarker = newSelectVerticalBarMarker(valueSize.Width)
 
 	picker.CanvasObject = fyne.NewContainerWithLayout(
@@ -299,7 +299,7 @@ func newValueColorPicker(size int) ColorPicker {
 		fyne.NewContainerWithLayout(
 			layout.NewHBoxLayout(),
 			layout.NewSpacer(),
-			fyne.NewContainer(colorPickerRaster, picker.selectColorMarker.Circle),
+			fyne.NewContainer(colorPickerRaster, picker.colorMarker.Circle),
 			fyne.NewContainer(valuePickerRaster, picker.selectVerticalBarMarker.Circle),
 			layout.NewSpacer(),
 		),
@@ -320,14 +320,14 @@ func (p *valueColorPicker) SetColor(c color.Color) {
 	rad := -2 * math.Pi * h
 	vec := baseV.rotate(rad).multiply(float64(p.pickerRadius) * s)
 	center := newVector(float64(p.pickerCenter.X), float64(p.pickerCenter.Y))
-	p.setColorMarkerPosition(center.add(vec).toPosition())
+	p.colorMarker.setPosition(center.add(vec).toPosition())
 	p.updatePickerColor()
 }
 
 func (p *valueColorPicker) updatePickerColor() {
 	color := calcColorFromCirclePointAndValue(
-		float64(p.selectColorMarker.center.X),
-		float64(p.selectColorMarker.center.Y),
+		float64(p.colorMarker.center.X),
+		float64(p.colorMarker.center.Y),
 		float64(p.pickerCenter.X),
 		float64(p.pickerCenter.Y),
 		p.value,

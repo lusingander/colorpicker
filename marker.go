@@ -13,14 +13,14 @@ var (
 	markerStrokeColor = color.RGBA{50, 50, 50, 200}
 )
 
-type selectColorMarker struct {
+type marker struct {
 	*canvas.Circle
 	center fyne.Position
 	radius int
 }
 
-func newSelectColorMarker() *selectColorMarker {
-	marker := &selectColorMarker{
+func newSelectColorMarker() *marker {
+	marker := &marker{
 		Circle: &canvas.Circle{
 			FillColor:   markerFillColor,
 			StrokeColor: markerStrokeColor,
@@ -28,11 +28,11 @@ func newSelectColorMarker() *selectColorMarker {
 		},
 		radius: 5,
 	}
-	marker.setColorMarkerPosition(fyne.NewPos(0, 0))
+	marker.setPosition(fyne.NewPos(0, 0))
 	return marker
 }
 
-func (m *selectColorMarker) setColorMarkerPosition(p fyne.Position) {
+func (m *marker) setPosition(p fyne.Position) {
 	m.center = p
 	m.Position1 = fyne.NewPos(p.X-m.radius, p.Y-m.radius)
 	m.Position2 = fyne.NewPos(p.X+m.radius, p.Y+m.radius)
