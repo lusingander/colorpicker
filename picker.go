@@ -133,8 +133,8 @@ func (p *defaultHueColorPicker) SetColor(c color.Color) {
 	p.barMarker.setPositionY(int(float64(p.pickerHeight) * h))
 	p.colorPickerRaster.setPixelColor(createSaturationValueColorPickerPixelColor(p.hue))
 	p.colorPickerRaster.Refresh()
-	x := int(round(float64(p.pickerWidth) * s))
-	y := int(round(float64(p.pickerHeight) * (1.0 - v)))
+	x := int(math.Round(float64(p.pickerWidth) * s))
+	y := int(math.Round(float64(p.pickerHeight) * (1.0 - v)))
 	p.colorMarker.setPosition(fyne.NewPos(x, y))
 	p.updatePickerColor()
 }
@@ -228,8 +228,8 @@ func (p *circleHueColorPicker) SetColor(c color.Color) {
 	p.hueMarker.setCircleMarekerPositionFromHue(p.hue)
 	p.colorPickerRaster.setPixelColor(createSaturationValueColorPickerPixelColor(p.hue))
 	p.colorPickerRaster.Refresh()
-	x := int(round(float64(p.pickerWidth) * s))
-	y := int(round(float64(p.pickerHeight) * (1.0 - v)))
+	x := int(math.Round(float64(p.pickerWidth) * s))
+	y := int(math.Round(float64(p.pickerHeight) * (1.0 - v)))
 	p.colorMarker.setPosition(fyne.NewPos(x, y))
 	p.updatePickerColor()
 }

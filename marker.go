@@ -56,7 +56,7 @@ func newCircleBarMarker(w, h int, hueBarWidth float64) *circleBarMarker {
 		cx:     fw / 2,
 		cy:     fh / 2,
 	}
-	markerCenter := fyne.NewPos(int(round(fw-fr)), int(round(fh/2)))
+	markerCenter := fyne.NewPos(int(math.Round(fw-fr)), int(math.Round(fh/2)))
 	marker.marker.setPosition(markerCenter)
 	return marker
 }
