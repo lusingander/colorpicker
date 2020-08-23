@@ -42,53 +42,42 @@ func (m *marker) setPositionY(y int) {
 	m.setPosition(fyne.NewPos(m.center.X, y))
 }
 
-type selectCircleMarker struct {
-	*canvas.Circle
+type circleBarMarker struct {
+	*marker
 	cx, cy float64
-	radius float64
 }
 
-func newSelectCircleMarker(w, h int) *selectCircleMarker {
+func newCircleBarMarker(w, h int, hueBarWidth float64) *circleBarMarker {
 	fw := float64(w)
 	fh := float64(h)
-	marker := &selectCircleMarker{
-		Circle: &canvas.Circle{
-			FillColor:   markerFillColor,
-			StrokeColor: markerStrokeColor,
-			StrokeWidth: 2,
-		},
+	fr := hueBarWidth / 2
+	marker := &circleBarMarker{
+		marker: newMarker(fr, 2),
 		cx:     fw / 2,
 		cy:     fh / 2,
-		radius: (fw / 10) / 2,
 	}
-	markerCenter := fyne.NewPos(int(round(fw-marker.radius)), int(round(fh/2)))
-	marker.updateMarkerPosition(markerCenter)
+	markerCenter := fyne.NewPos(int(round(fw-fr)), int(round(fh/2)))
+	marker.marker.setPosition(markerCenter)
 	return marker
 }
 
-func (m *selectCircleMarker) setCircleMarkerPosition(p fyne.Position) {
+func (m *circleBarMarker) setCircleMarkerPosition(p fyne.Position) {
 	v := newVectorFromPoints(m.cx, m.cy, float64(p.X), float64(p.Y))
 	nv := v.normalize()
 	center := newVector(m.cx, m.cy)
 	markerCenter := center.add(nv.multiply(m.cx - m.radius)).toPosition()
-	m.updateMarkerPosition(markerCenter)
+	m.marker.setPosition(markerCenter)
 }
 
-func (m *selectCircleMarker) setCircleMarekerPositionFromHue(hue float64) {
+func (m *circleBarMarker) setCircleMarekerPositionFromHue(hue float64) {
 	rad := -2 * math.Pi * hue
 	center := newVector(m.cx, m.cy)
 	dir := newVector(1, 0).rotate(rad).multiply(m.cx - m.radius)
 	markerCenter := center.add(dir).toPosition()
-	m.updateMarkerPosition(markerCenter)
+	m.marker.setPosition(markerCenter)
 }
 
-func (m *selectCircleMarker) updateMarkerPosition(p fyne.Position) {
-	r := int(round(m.radius))
-	m.Circle.Position1 = fyne.NewPos(p.X-r, p.Y-r)
-	m.Circle.Position2 = fyne.NewPos(p.X+r, p.Y+r)
-}
-
-func (m *selectCircleMarker) calcHueFromCircleMarker(p fyne.Position) float64 {
+func (m *circleBarMarker) calcHueFromCircleMarker(p fyne.Position) float64 {
 	v := newVectorFromPoints(m.cx, m.cy, float64(p.X), float64(p.Y))
 	baseV := newVector(1, 0)
 	rad := math.Acos(baseV.dot(v) / (v.norm() * baseV.norm()))
