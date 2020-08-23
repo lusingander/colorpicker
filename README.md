@@ -1,4 +1,5 @@
 ![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/lusingander/colorpicker)
+[![PkgGoDev](https://pkg.go.dev/badge/github.com/lusingander/colorpicker?tab=doc)](https://pkg.go.dev/github.com/lusingander/colorpicker?tab=doc)
 [![Go Report Card](https://goreportcard.com/badge/github.com/lusingander/colorpicker)](https://goreportcard.com/report/github.com/lusingander/colorpicker)
 ![GitHub](https://img.shields.io/github/license/lusingander/colorpicker)
 
