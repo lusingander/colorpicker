@@ -16,7 +16,7 @@ const (
 	StyleCircle
 	// StyleValue is style to display hue-saturation area and vertical value bar.
 	StyleValue
-	// StyleSaturation is style to display hue-value area and saturation value bar.
+	// StyleSaturation is style to display hue-value area and vertical saturation bar.
 	StyleSaturation
 )
 
