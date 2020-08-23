@@ -16,17 +16,17 @@ var (
 type marker struct {
 	*canvas.Circle
 	center fyne.Position
-	radius int
+	radius float64
 }
 
-func newSelectColorMarker() *marker {
+func newMarker(radius float64, strokeWidth int) *marker {
 	marker := &marker{
 		Circle: &canvas.Circle{
 			FillColor:   markerFillColor,
 			StrokeColor: markerStrokeColor,
-			StrokeWidth: 1,
+			StrokeWidth: float32(strokeWidth),
 		},
-		radius: 5,
+		radius: radius,
 	}
 	marker.setPosition(fyne.NewPos(0, 0))
 	return marker
@@ -34,8 +34,12 @@ func newSelectColorMarker() *marker {
 
 func (m *marker) setPosition(p fyne.Position) {
 	m.center = p
-	m.Position1 = fyne.NewPos(p.X-m.radius, p.Y-m.radius)
-	m.Position2 = fyne.NewPos(p.X+m.radius, p.Y+m.radius)
+	m.Position1 = fyne.NewPos(p.X-int(m.radius), p.Y-int(m.radius))
+	m.Position2 = fyne.NewPos(p.X+int(m.radius), p.Y+int(m.radius))
+}
+
+func newSelectColorMarker() *marker {
+	return newMarker(5, 1)
 }
 
 type selectVerticalBarMarker struct {
