@@ -16,6 +16,8 @@ const (
 	StyleCircle
 	// StyleValue is style to display hue-saturation area and vertical value bar.
 	StyleValue
+	// StyleSaturation is style to display hue-value area and saturation value bar.
+	StyleSaturation
 )
 
 // ColorPicker represents color picker component.
@@ -33,6 +35,8 @@ func New(size int, style PickerStyle) ColorPicker {
 		return newCircleHueColorPicker(size)
 	case StyleValue:
 		return newValueColorPicker(size)
+	case StyleSaturation:
+		return newSaturationColorPicker(size)
 	default:
 		return newDefaultHueColorPicker(size)
 	}

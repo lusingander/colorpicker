@@ -339,6 +339,95 @@ func (p *valueColorPicker) valueBarCenter() float64 {
 	return float64(p.valueBarWidth) / 2
 }
 
+type saturationColorPicker struct {
+	*colorPickerBase
+
+	pickerWidth            int
+	pickerHeight           int
+	saturationBarWidth     int
+	saturation             float64
+	colorMarker            *marker
+	saturationMarker       *marker
+	saturationPickerRaster *tappableRaster
+}
+
+func newSaturationColorPicker(size int) ColorPicker {
+	pickerSize := fyne.NewSize(size, size)
+	saturationSize := fyne.NewSize(size/10, size)
+
+	picker := &saturationColorPicker{
+		saturation:         0,
+		pickerWidth:        pickerSize.Width,
+		pickerHeight:       pickerSize.Height,
+		saturationBarWidth: saturationSize.Width,
+		colorPickerBase: &colorPickerBase{
+			changed: func(color.Color) {},
+		},
+	}
+
+	colorPickerRaster := newTappableRaster(createHueValueColorPickerPixelColor(picker.saturation))
+	colorPickerRaster.SetMinSize(pickerSize)
+	colorPickerRaster.tapped = func(p fyne.Position) {
+		picker.colorMarker.setPosition(p)
+		picker.updatePickerColor()
+		colorPickerRaster.Refresh()
+	}
+	colorPickerRaster.Resize(pickerSize) // Note: doesn't render if remove this line...
+	picker.colorPickerRaster = colorPickerRaster
+
+	saturationPickerRaster := newTappableRaster(createSaturationBarPicker(0., 1.))
+	saturationPickerRaster.SetMinSize(saturationSize)
+	saturationPickerRaster.tapped = func(p fyne.Position) {
+		picker.saturation = 1.0 - (float64(p.Y) / float64(saturationSize.Height))
+		colorPickerRaster.setPixelColor(createHueValueColorPickerPixelColor(picker.saturation))
+		colorPickerRaster.Refresh()
+		picker.saturationMarker.setPositionY(p.Y)
+		picker.updatePickerColor()
+	}
+	saturationPickerRaster.Resize(saturationSize)
+	picker.saturationPickerRaster = saturationPickerRaster
+
+	picker.colorMarker = newMarker(5, 1)
+	picker.saturationMarker = newMarker(picker.saturationBarCenter(), 2)
+	picker.saturationMarker.setPosition(fyne.NewPos(int(picker.saturationBarCenter()), 0))
+
+	picker.CanvasObject = newSpaceCenteredLayout(
+		fyne.NewContainer(colorPickerRaster, picker.colorMarker.Circle),
+		fyne.NewContainer(saturationPickerRaster, picker.saturationMarker.Circle),
+	)
+	return picker
+}
+
+func (p *saturationColorPicker) updatePickerColor() {
+	x := p.colorMarker.center.X
+	y := p.colorMarker.center.Y
+	color := fromHSV(float64(x)/float64(p.pickerWidth), p.saturation, 1.0-float64(y)/float64(p.pickerHeight))
+	p.changed(color)
+
+	// TODO: should not recalculate...
+	h, s, v := fromColor(color)
+	if s > 0 {
+		p.saturationPickerRaster.setPixelColor(createSaturationBarPicker(h, v))
+		p.saturationPickerRaster.Refresh()
+	}
+}
+
+func (p *saturationColorPicker) SetColor(c color.Color) {
+	h, s, v := fromColor(c)
+	p.saturation = s
+	p.saturationMarker.setPositionY(int(float64(p.pickerHeight) * (1.0 - s)))
+	p.colorPickerRaster.setPixelColor(createHueValueColorPickerPixelColor(p.saturation))
+	p.colorPickerRaster.Refresh()
+	x := int(math.Round(float64(p.pickerWidth) * h))
+	y := int(math.Round(float64(p.pickerHeight) * (1.0 - v)))
+	p.colorMarker.setPosition(fyne.NewPos(x, y))
+	p.updatePickerColor()
+}
+
+func (p *saturationColorPicker) saturationBarCenter() float64 {
+	return float64(p.saturationBarWidth) / 2
+}
+
 type colorPickerBaseWidgetRender struct {
 	picker *colorPickerBase
 }
@@ -419,6 +508,18 @@ func calcColorFromCirclePointAndValue(x, y, cx, cy, value float64) color.Color {
 func createValueBarPicker(hue, saturation float64) func(x, y, w, h int) color.Color {
 	return func(x, y, w, h int) color.Color {
 		return fromHSV(hue, saturation, 1.0-float64(y)/float64(h))
+	}
+}
+
+func createHueValueColorPickerPixelColor(saturation float64) func(int, int, int, int) color.Color {
+	return func(x, y, w, h int) color.Color {
+		return fromHSV(float64(x)/float64(w), saturation, 1.0-float64(y)/float64(h))
+	}
+}
+
+func createSaturationBarPicker(hue, value float64) func(x, y, w, h int) color.Color {
+	return func(x, y, w, h int) color.Color {
+		return fromHSV(hue, 1.0-float64(y)/float64(h), value)
 	}
 }
 
