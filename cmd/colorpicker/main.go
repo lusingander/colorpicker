@@ -31,6 +31,7 @@ func main() {
 		fyne.NewContainerWithLayout(
 			layout.NewHBoxLayout(),
 			createPickerContainer(200, colorpicker.StyleValue),
+			createPickerContainer(200, colorpicker.StyleSaturation),
 		),
 	))
 
@@ -93,6 +94,8 @@ func styleName(s colorpicker.PickerStyle) string {
 		return "StyleCircle"
 	case colorpicker.StyleValue:
 		return "StyleValue"
+	case colorpicker.StyleSaturation:
+		return "StyleSaturation"
 	default:
 		return "StyleDefault"
 	}
