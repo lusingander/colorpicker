@@ -36,7 +36,7 @@ func NewColorSelectModalRect(parent fyne.Window, minSize fyne.Size, defalutColor
 	rect := &colorSelectModalRect{
 		tappableRect: newTappableRect(defalutColor),
 		parent:       parent,
-		pickerStyle:  StyleDefault,
+		pickerStyle:  StyleHue,
 	}
 	rect.tappableRect.tapped = rect.tapped
 	rect.tappableRect.SetMinSize(minSize)

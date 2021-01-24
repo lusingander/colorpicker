@@ -10,10 +10,10 @@ import (
 type PickerStyle int
 
 const (
-	// StyleDefault is style to display saturation-value area and vertical hue bar.
-	StyleDefault PickerStyle = iota
-	// StyleCircle is style to display saturation-value area and circle hue bar.
-	StyleCircle
+	// StyleHue is style to display saturation-value area and vertical hue bar.
+	StyleHue PickerStyle = iota
+	// StyleHueCircle is style to display saturation-value area and circle hue bar.
+	StyleHueCircle
 	// StyleValue is style to display hue-saturation area and vertical value bar.
 	StyleValue
 	// StyleSaturation is style to display hue-value area and vertical saturation bar.
@@ -31,7 +31,7 @@ type ColorPicker interface {
 // New returns color picker container.
 func New(size float32, style PickerStyle) ColorPicker {
 	switch style {
-	case StyleCircle:
+	case StyleHueCircle:
 		return newCircleHueColorPicker(size)
 	case StyleValue:
 		return newValueColorPicker(size)
