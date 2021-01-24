@@ -35,12 +35,12 @@ type defaultMarker struct {
 	radius float32
 }
 
-func newDefaultMarker(radius float32, strokeWidth int) marker {
+func newDefaultMarker(radius float32) marker {
 	marker := &defaultMarker{
 		Circle: &canvas.Circle{
 			FillColor:   markerFillColor,
 			StrokeColor: markerStrokeColor,
-			StrokeWidth: float32(strokeWidth),
+			StrokeWidth: 1,
 		},
 		radius: radius,
 	}
@@ -73,8 +73,8 @@ type defaultBarMarker struct {
 	marker
 }
 
-func newDefaultBarMarker(radius float32, strokeWidth int) barMarker {
-	m := newDefaultMarker(radius, strokeWidth)
+func newDefaultBarMarker(barWidth float32) barMarker {
+	m := newDefaultMarker(barWidth / 2)
 	return &defaultBarMarker{marker: m}
 }
 
@@ -96,7 +96,7 @@ func newCircleBarMarker(w, h float32, barWidth float32) *circleBarMarker {
 	fh := float64(h)
 	fr := barWidth / 2
 	marker := &circleBarMarker{
-		defaultMarker: newDefaultMarker(fr, 2).(*defaultMarker),
+		defaultMarker: newDefaultMarker(fr).(*defaultMarker),
 		cx:            w / 2,
 		cy:            h / 2,
 	}

@@ -109,8 +109,8 @@ func newDefaultHueColorPicker(size float32) ColorPicker {
 	}
 	huePickerRaster.Resize(hueSize)
 
-	picker.colorMarker = newDefaultMarker(5, 1)
-	picker.hueMarker = newDefaultBarMarker(picker.hueBarCenter(), 2)
+	picker.colorMarker = newDefaultMarker(5)
+	picker.hueMarker = newDefaultBarMarker(picker.hueBarWidth)
 	picker.hueMarker.setPosition(fyne.NewPos(picker.hueBarCenter(), 0))
 
 	picker.CanvasObject = newSpaceCenteredLayout(
@@ -191,7 +191,7 @@ func newCircleHueColorPicker(size float32) ColorPicker {
 	}
 	circleHuePickerRaster.Resize(hueSize)
 
-	picker.colorMarker = newDefaultMarker(5, 1)
+	picker.colorMarker = newDefaultMarker(5)
 	picker.hueMarker = newCircleBarMarker(hueSize.Width, hueSize.Height, picker.cirlceHueBarWidth())
 
 	picker.CanvasObject = newSpaceCenteredLayout(
@@ -283,9 +283,9 @@ func newValueColorPicker(size float32) ColorPicker {
 	valuePickerRaster.Resize(valueSize)
 	picker.valuePickerRaster = valuePickerRaster
 
-	picker.colorMarker = newDefaultMarker(5, 1)
+	picker.colorMarker = newDefaultMarker(5)
 	picker.colorMarker.setPosition(picker.pickerCenter)
-	picker.valueMarker = newDefaultBarMarker(picker.valueBarCenter(), 2)
+	picker.valueMarker = newDefaultBarMarker(picker.valueBarWidth)
 	picker.valueMarker.setPosition(fyne.NewPos(picker.valueBarCenter(), 0))
 
 	picker.CanvasObject = newSpaceCenteredLayout(
@@ -386,8 +386,8 @@ func newSaturationColorPicker(size float32) ColorPicker {
 	saturationPickerRaster.Resize(saturationSize)
 	picker.saturationPickerRaster = saturationPickerRaster
 
-	picker.colorMarker = newDefaultMarker(5, 1)
-	picker.saturationMarker = newDefaultBarMarker(picker.saturationBarCenter(), 2)
+	picker.colorMarker = newDefaultMarker(5)
+	picker.saturationMarker = newDefaultBarMarker(picker.saturationBarWidth)
 	picker.saturationMarker.setPosition(fyne.NewPos(picker.saturationBarCenter(), 0))
 
 	picker.CanvasObject = newSpaceCenteredLayout(
