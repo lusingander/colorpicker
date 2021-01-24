@@ -523,9 +523,9 @@ func createSaturationBarPicker(hue, value float64) func(x, y, w, h int) color.Co
 }
 
 func newSpaceCenteredLayout(objects ...fyne.CanvasObject) *fyne.Container {
-	l := newSpecedLayout(
+	l := newSpacedLayout(
 		layout.NewVBoxLayout(),
-		newSpecedLayout(
+		newSpacedLayout(
 			layout.NewHBoxLayout(),
 			objects...,
 		),
@@ -534,7 +534,7 @@ func newSpaceCenteredLayout(objects ...fyne.CanvasObject) *fyne.Container {
 	return l
 }
 
-func newSpecedLayout(l fyne.Layout, objects ...fyne.CanvasObject) *fyne.Container {
+func newSpacedLayout(l fyne.Layout, objects ...fyne.CanvasObject) *fyne.Container {
 	c := fyne.NewContainerWithLayout(l)
 	c.AddObject(layout.NewSpacer())
 	for _, o := range objects {
