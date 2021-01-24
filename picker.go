@@ -71,7 +71,7 @@ type defaultHueColorPicker struct {
 	hueBarWidth  float32
 	hue          float32
 	colorMarker  marker
-	hueMarker    marker
+	hueMarker    barMarker
 }
 
 func newDefaultHueColorPicker(size float32) ColorPicker {
@@ -109,8 +109,8 @@ func newDefaultHueColorPicker(size float32) ColorPicker {
 	}
 	huePickerRaster.Resize(hueSize)
 
-	picker.colorMarker = newMarker(5, 1)
-	picker.hueMarker = newMarker(picker.hueBarCenter(), 2)
+	picker.colorMarker = newDefaultMarker(5, 1)
+	picker.hueMarker = newDefaultBarMarker(picker.hueBarCenter(), 2)
 	picker.hueMarker.setPosition(fyne.NewPos(picker.hueBarCenter(), 0))
 
 	picker.CanvasObject = newSpaceCenteredLayout(
@@ -151,7 +151,7 @@ type circleHueColorPicker struct {
 	hueCircleWidth float32
 	hue            float32
 	colorMarker    marker
-	hueMarker      *circleBarMarker
+	hueMarker      barMarker
 }
 
 func newCircleHueColorPicker(size float32) ColorPicker {
@@ -183,15 +183,15 @@ func newCircleHueColorPicker(size float32) ColorPicker {
 	circleHuePickerRaster := newTappableRaster(circleHuePicker)
 	circleHuePickerRaster.SetMinSize(hueSize)
 	circleHuePickerRaster.tapped = func(p fyne.Position) {
-		picker.hue = picker.hueMarker.calcHueFromCircleMarker(p)
+		picker.hue = picker.hueMarker.calcValueFromPosition(p)
 		colorPickerRaster.setPixelColor(createSaturationValueColorPickerPixelColor(picker.hue))
 		colorPickerRaster.Refresh()
-		picker.hueMarker.setCircleMarkerPosition(p)
+		picker.hueMarker.setPosition(p)
 		picker.updatePickerColor()
 	}
 	circleHuePickerRaster.Resize(hueSize)
 
-	picker.colorMarker = newMarker(5, 1)
+	picker.colorMarker = newDefaultMarker(5, 1)
 	picker.hueMarker = newCircleBarMarker(hueSize.Width, hueSize.Height, picker.cirlceHueBarWidth())
 
 	picker.CanvasObject = newSpaceCenteredLayout(
@@ -199,7 +199,7 @@ func newCircleHueColorPicker(size float32) ColorPicker {
 			layout.NewCenterLayout(),
 			fyne.NewContainer(
 				circleHuePickerRaster,
-				picker.hueMarker.Circle,
+				picker.hueMarker.object(),
 			),
 			fyne.NewContainer(
 				colorPickerRaster,
@@ -224,7 +224,7 @@ func (p *circleHueColorPicker) updatePickerColor() {
 func (p *circleHueColorPicker) SetColor(c color.Color) {
 	h, s, v := fromColor(c)
 	p.hue = float32(h)
-	p.hueMarker.setCircleMarekerPositionFromHue(p.hue)
+	p.hueMarker.setPositionFromValue(p.hue)
 	p.colorPickerRaster.setPixelColor(createSaturationValueColorPickerPixelColor(p.hue))
 	p.colorPickerRaster.Refresh()
 	x := float32(math.Round(float64(p.pickerWidth) * s))
@@ -241,7 +241,7 @@ type valueColorPicker struct {
 	valueBarWidth     float32
 	value             float32
 	colorMarker       marker
-	valueMarker       marker
+	valueMarker       barMarker
 	valuePickerRaster *tappableRaster
 }
 
@@ -283,9 +283,9 @@ func newValueColorPicker(size float32) ColorPicker {
 	valuePickerRaster.Resize(valueSize)
 	picker.valuePickerRaster = valuePickerRaster
 
-	picker.colorMarker = newMarker(5, 1)
+	picker.colorMarker = newDefaultMarker(5, 1)
 	picker.colorMarker.setPosition(picker.pickerCenter)
-	picker.valueMarker = newMarker(picker.valueBarCenter(), 2)
+	picker.valueMarker = newDefaultBarMarker(picker.valueBarCenter(), 2)
 	picker.valueMarker.setPosition(fyne.NewPos(picker.valueBarCenter(), 0))
 
 	picker.CanvasObject = newSpaceCenteredLayout(
@@ -346,7 +346,7 @@ type saturationColorPicker struct {
 	saturationBarWidth     float32
 	saturation             float32
 	colorMarker            marker
-	saturationMarker       marker
+	saturationMarker       barMarker
 	saturationPickerRaster *tappableRaster
 }
 
@@ -386,8 +386,8 @@ func newSaturationColorPicker(size float32) ColorPicker {
 	saturationPickerRaster.Resize(saturationSize)
 	picker.saturationPickerRaster = saturationPickerRaster
 
-	picker.colorMarker = newMarker(5, 1)
-	picker.saturationMarker = newMarker(picker.saturationBarCenter(), 2)
+	picker.colorMarker = newDefaultMarker(5, 1)
+	picker.saturationMarker = newDefaultBarMarker(picker.saturationBarCenter(), 2)
 	picker.saturationMarker.setPosition(fyne.NewPos(picker.saturationBarCenter(), 0))
 
 	picker.CanvasObject = newSpaceCenteredLayout(
