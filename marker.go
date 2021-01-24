@@ -13,14 +13,30 @@ var (
 	markerStrokeColor = color.RGBA{50, 50, 50, 200}
 )
 
-type marker struct {
+type marker interface {
+	fyne.CanvasObject
+
+	position() fyne.Position
+	setPosition(fyne.Position)
+	object() fyne.CanvasObject
+}
+
+func setPositionX(m marker, x float32) {
+	m.setPosition(fyne.NewPos(x, m.position().Y))
+}
+
+func setPositionY(m marker, y float32) {
+	m.setPosition(fyne.NewPos(m.position().X, y))
+}
+
+type defaultMarker struct {
 	*canvas.Circle
 	center fyne.Position
 	radius float32
 }
 
-func newMarker(radius float32, strokeWidth int) *marker {
-	marker := &marker{
+func newMarker(radius float32, strokeWidth int) *defaultMarker {
+	marker := &defaultMarker{
 		Circle: &canvas.Circle{
 			FillColor:   markerFillColor,
 			StrokeColor: markerStrokeColor,
@@ -32,18 +48,22 @@ func newMarker(radius float32, strokeWidth int) *marker {
 	return marker
 }
 
-func (m *marker) setPosition(p fyne.Position) {
+func (m *defaultMarker) position() fyne.Position {
+	return m.center
+}
+
+func (m *defaultMarker) setPosition(p fyne.Position) {
 	m.center = p
 	m.Position1 = fyne.NewPos(p.X-float32(m.radius), p.Y-float32(m.radius))
 	m.Position2 = fyne.NewPos(p.X+float32(m.radius), p.Y+float32(m.radius))
 }
 
-func (m *marker) setPositionY(y float32) {
-	m.setPosition(fyne.NewPos(m.center.X, y))
+func (m *defaultMarker) object() fyne.CanvasObject {
+	return m.Circle
 }
 
 type circleBarMarker struct {
-	*marker
+	*defaultMarker
 	cx, cy float32
 }
 
@@ -52,12 +72,12 @@ func newCircleBarMarker(w, h float32, hueBarWidth float32) *circleBarMarker {
 	fh := float64(h)
 	fr := hueBarWidth / 2
 	marker := &circleBarMarker{
-		marker: newMarker(fr, 2),
-		cx:     w / 2,
-		cy:     h / 2,
+		defaultMarker: newMarker(fr, 2),
+		cx:            w / 2,
+		cy:            h / 2,
 	}
 	markerCenter := fyne.NewPos(float32(math.Round(fw-float64(fr))), float32(math.Round(fh/2)))
-	marker.marker.setPosition(markerCenter)
+	marker.defaultMarker.setPosition(markerCenter)
 	return marker
 }
 
@@ -66,7 +86,7 @@ func (m *circleBarMarker) setCircleMarkerPosition(p fyne.Position) {
 	nv := v.normalize()
 	center := newVector(float64(m.cx), float64(m.cy))
 	markerCenter := center.add(nv.multiply(float64(m.cx - m.radius))).toPosition()
-	m.marker.setPosition(markerCenter)
+	m.defaultMarker.setPosition(markerCenter)
 }
 
 func (m *circleBarMarker) setCircleMarekerPositionFromHue(hue float32) {
@@ -74,7 +94,7 @@ func (m *circleBarMarker) setCircleMarekerPositionFromHue(hue float32) {
 	center := newVector(float64(m.cx), float64(m.cy))
 	dir := newVector(1, 0).rotate(rad).multiply(float64(m.cx - m.radius))
 	markerCenter := center.add(dir).toPosition()
-	m.marker.setPosition(markerCenter)
+	m.defaultMarker.setPosition(markerCenter)
 }
 
 func (m *circleBarMarker) calcHueFromCircleMarker(p fyne.Position) float32 {
