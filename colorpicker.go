@@ -3,7 +3,7 @@ package colorpicker
 import (
 	"image/color"
 
-	"fyne.io/fyne"
+	"fyne.io/fyne/v2"
 )
 
 // PickerStyle represents how the picker is displayed.
@@ -29,7 +29,7 @@ type ColorPicker interface {
 }
 
 // New returns color picker container.
-func New(size int, style PickerStyle) ColorPicker {
+func New(size float32, style PickerStyle) ColorPicker {
 	switch style {
 	case StyleCircle:
 		return newCircleHueColorPicker(size)

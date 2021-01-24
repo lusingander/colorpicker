@@ -3,7 +3,7 @@ package colorpicker
 import (
 	"math"
 
-	"fyne.io/fyne"
+	"fyne.io/fyne/v2"
 )
 
 type vector struct {
@@ -43,7 +43,7 @@ func (v *vector) dot(u *vector) float64 {
 }
 
 func (v *vector) toPosition() fyne.Position {
-	return fyne.NewPos(int(v.x), int(v.y))
+	return fyne.NewPos(float32(v.x), float32(v.y))
 }
 
 func (v *vector) rotate(rad float64) *vector {

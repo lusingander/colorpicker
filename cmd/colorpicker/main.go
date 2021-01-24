@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"image/color"
 
-	"fyne.io/fyne"
-	"fyne.io/fyne/app"
-	"fyne.io/fyne/canvas"
-	"fyne.io/fyne/layout"
-	"fyne.io/fyne/widget"
+	"fyne.io/fyne/v2"
+	"fyne.io/fyne/v2/app"
+	"fyne.io/fyne/v2/canvas"
+	"fyne.io/fyne/v2/layout"
+	"fyne.io/fyne/v2/widget"
 
 	"github.com/lusingander/colorpicker"
 )
@@ -38,7 +38,7 @@ func main() {
 	w.ShowAndRun()
 }
 
-func createPickerContainer(height int, style colorpicker.PickerStyle) *fyne.Container {
+func createPickerContainer(height float32, style colorpicker.PickerStyle) *fyne.Container {
 	displayColor := newDisplayColor()
 
 	// Create picker
