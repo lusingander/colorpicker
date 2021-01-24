@@ -30,7 +30,7 @@ func createContainer(w fyne.Window) fyne.CanvasObject {
 	current = defaultColor
 
 	simpleDisplayColor := newSimpleDisplayColor()
-	picker := colorpicker.New(200, colorpicker.StyleDefault)
+	picker := colorpicker.New(200, colorpicker.StyleHue)
 	picker.SetOnChanged(func(c color.Color) {
 		current = c
 		simpleDisplayColor.setColor(current)

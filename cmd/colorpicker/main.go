@@ -25,8 +25,8 @@ func main() {
 		layout.NewVBoxLayout(),
 		fyne.NewContainerWithLayout(
 			layout.NewHBoxLayout(),
-			createPickerContainer(200, colorpicker.StyleDefault),
-			createPickerContainer(200, colorpicker.StyleCircle),
+			createPickerContainer(200, colorpicker.StyleHue),
+			createPickerContainer(200, colorpicker.StyleHueCircle),
 		),
 		fyne.NewContainerWithLayout(
 			layout.NewHBoxLayout(),
@@ -90,13 +90,13 @@ func hexColorString(c color.Color) string {
 
 func styleName(s colorpicker.PickerStyle) string {
 	switch s {
-	case colorpicker.StyleCircle:
-		return "StyleCircle"
+	case colorpicker.StyleHueCircle:
+		return "StyleHueCircle"
 	case colorpicker.StyleValue:
 		return "StyleValue"
 	case colorpicker.StyleSaturation:
 		return "StyleSaturation"
 	default:
-		return "StyleDefault"
+		return "StyleHue"
 	}
 }
