@@ -12,7 +12,7 @@ Color picker component for [Fyne](https://fyne.io/)
 ## Usage
 
 ```go
-picker := colorpicker.New(200 /* height */, colorpicker.StyleDefault /* Style */)
+picker := colorpicker.New(200 /* height */, colorpicker.StyleHue /* Style */)
 picker.SetOnChanged(func(c color.Color) {
     // called when the color is changed on the picker
     fmt.Println(c)
