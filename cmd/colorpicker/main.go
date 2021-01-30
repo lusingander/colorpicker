@@ -85,7 +85,7 @@ func (c *displayColor) setColor(clr color.Color) {
 
 func hexColorString(c color.Color) string {
 	rgba := color.RGBAModel.Convert(c).(color.RGBA)
-	return fmt.Sprintf("#%.2X%.2X%.2X", rgba.R, rgba.G, rgba.B)
+	return fmt.Sprintf("#%.2X%.2X%.2X%.2X", rgba.R, rgba.G, rgba.B, rgba.A)
 }
 
 func styleName(s colorpicker.PickerStyle) string {
