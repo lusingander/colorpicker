@@ -67,15 +67,13 @@ func (p *colorPickerBase) Visible() bool {
 type defaultHueColorPicker struct {
 	*colorPickerBase
 
-	pickerWidth       float32
-	pickerHeight      float32
-	barWidth          float32
-	hue               float32
-	alpha             float32
-	colorMarker       marker
-	hueMarker         barMarker
-	alphaMarker       barMarker
-	alphaPickerRaster *tappableRaster
+	pickerWidth  float32
+	pickerHeight float32
+	barWidth     float32
+	hue          float32
+	colorMarker  marker
+	hueMarker    barMarker
+	*alphaPickerBar
 }
 
 func newDefaultHueColorPicker(size float32) ColorPicker {
@@ -84,7 +82,6 @@ func newDefaultHueColorPicker(size float32) ColorPicker {
 
 	picker := &defaultHueColorPicker{
 		hue:          0,
-		alpha:        1,
 		pickerWidth:  pickerSize.Width,
 		pickerHeight: pickerSize.Height,
 		barWidth:     barSize.Width,
@@ -114,30 +111,16 @@ func newDefaultHueColorPicker(size float32) ColorPicker {
 	}
 	huePickerRaster.Resize(barSize)
 
-	alphaPickerRaster := newTappableRaster(createAlphaBarPickerPixelColor(transparent))
-	alphaPickerRaster.SetMinSize(barSize)
-	alphaPickerRaster.tapped = func(p fyne.Position) {
-		picker.alpha = 1. - (p.Y / barSize.Height)
-		setPositionY(picker.alphaMarker, p.Y)
-		picker.updatePickerColor()
-	}
-	alphaPickerRaster.Resize(barSize)
-	picker.alphaPickerRaster = alphaPickerRaster
+	picker.alphaPickerBar = newAlphaPickerBar(barSize, picker.updatePickerColor)
 
 	picker.colorMarker = newDefaultMarker(5)
 	picker.hueMarker = newDefaultBarMarker(picker.barWidth)
 	picker.hueMarker.setPosition(fyne.NewPos(picker.hueBarCenter(), 0))
-	picker.alphaMarker = newDefaultBarMarker(picker.barWidth)
-	picker.alphaMarker.setPosition(fyne.NewPos(float32(picker.barWidth)/2, 0))
 
 	picker.CanvasObject = newSpaceCenteredLayout(
 		fyne.NewContainer(colorPickerRaster, picker.colorMarker.object()),
 		fyne.NewContainer(huePickerRaster, picker.hueMarker.object()),
-		fyne.NewContainerWithLayout(
-			layout.NewMaxLayout(),
-			newCheckeredBackground(),
-			fyne.NewContainer(alphaPickerRaster, picker.alphaMarker.object()),
-		),
+		picker.alphaPickerBar.object(),
 	)
 	return picker
 }
@@ -148,8 +131,7 @@ func (p *defaultHueColorPicker) updatePickerColor() {
 	color := fromHSVA(float64(p.hue), float64(x)/float64(p.pickerWidth), 1.0-float64(y)/float64(p.pickerHeight), float64(p.alpha))
 	p.changed(color)
 
-	p.alphaPickerRaster.setPixelColor(createAlphaBarPickerPixelColor(color))
-	p.alphaPickerRaster.Refresh()
+	p.alphaPickerBar.setColor(color)
 }
 
 func (p *defaultHueColorPicker) SetColor(c color.Color) {
@@ -450,6 +432,46 @@ func (p *saturationColorPicker) SetColor(c color.Color) {
 
 func (p *saturationColorPicker) saturationBarCenter() float32 {
 	return float32(p.saturationBarWidth) / 2
+}
+
+type alphaPickerBar struct {
+	alpha  float32
+	marker barMarker
+	raster *tappableRaster
+}
+
+func newAlphaPickerBar(size fyne.Size, tapped func()) *alphaPickerBar {
+	bar := &alphaPickerBar{
+		alpha: 1.,
+	}
+
+	alphaPickerRaster := newTappableRaster(createAlphaBarPickerPixelColor(transparent))
+	alphaPickerRaster.SetMinSize(size)
+	alphaPickerRaster.tapped = func(p fyne.Position) {
+		bar.alpha = 1. - (p.Y / size.Height)
+		setPositionY(bar.marker, p.Y)
+		tapped()
+	}
+	alphaPickerRaster.Resize(size)
+	bar.raster = alphaPickerRaster
+
+	bar.marker = newDefaultBarMarker(size.Width)
+	bar.marker.setPosition(fyne.NewPos(float32(size.Width)/2, 0))
+
+	return bar
+}
+
+func (b *alphaPickerBar) object() fyne.CanvasObject {
+	return fyne.NewContainerWithLayout(
+		layout.NewMaxLayout(),
+		newCheckeredBackground(),
+		fyne.NewContainer(b.raster, b.marker.object()),
+	)
+}
+
+func (b *alphaPickerBar) setColor(c color.Color) {
+	b.raster.setPixelColor(createAlphaBarPickerPixelColor(c))
+	b.raster.Refresh()
 }
 
 type colorPickerBaseWidgetRender struct {
