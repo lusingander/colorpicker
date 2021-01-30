@@ -11,7 +11,7 @@ import (
 )
 
 var (
-	transparent = color.RGBA{0, 0, 0, 0}
+	transparent = color.NRGBA{0, 0, 0, 0}
 )
 
 type colorPickerBase struct {

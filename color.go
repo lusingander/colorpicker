@@ -5,9 +5,9 @@ import (
 	"math"
 )
 
-func fromHSV(h, s, v float64) *color.RGBA {
+func fromHSV(h, s, v float64) color.NRGBA {
 	if s == 0 {
-		return &color.RGBA{
+		return color.NRGBA{
 			R: roundUint8(v * 255),
 			G: roundUint8(v * 255),
 			B: roundUint8(v * 255),
@@ -26,42 +26,42 @@ func fromHSV(h, s, v float64) *color.RGBA {
 
 	switch int(i) {
 	case 0:
-		return &color.RGBA{
+		return color.NRGBA{
 			R: roundUint8(v * 255),
 			G: roundUint8(v3 * 255),
 			B: roundUint8(v1 * 255),
 			A: 0xff,
 		}
 	case 1:
-		return &color.RGBA{
+		return color.NRGBA{
 			R: roundUint8(v2 * 255),
 			G: roundUint8(v * 255),
 			B: roundUint8(v1 * 255),
 			A: 0xff,
 		}
 	case 2:
-		return &color.RGBA{
+		return color.NRGBA{
 			R: roundUint8(v1 * 255),
 			G: roundUint8(v * 255),
 			B: roundUint8(v3 * 255),
 			A: 0xff,
 		}
 	case 3:
-		return &color.RGBA{
+		return color.NRGBA{
 			R: roundUint8(v1 * 255),
 			G: roundUint8(v2 * 255),
 			B: roundUint8(v * 255),
 			A: 0xff,
 		}
 	case 4:
-		return &color.RGBA{
+		return color.NRGBA{
 			R: roundUint8(v3 * 255),
 			G: roundUint8(v1 * 255),
 			B: roundUint8(v * 255),
 			A: 0xff,
 		}
 	default:
-		return &color.RGBA{
+		return color.NRGBA{
 			R: roundUint8(v * 255),
 			G: roundUint8(v1 * 255),
 			B: roundUint8(v2 * 255),
@@ -70,7 +70,7 @@ func fromHSV(h, s, v float64) *color.RGBA {
 	}
 }
 
-func fromHSVA(h, s, v, a float64) *color.RGBA {
+func fromHSVA(h, s, v, a float64) color.NRGBA {
 	rgba := fromHSV(h, s, v)
 	rgba.A = roundUint8(a * 255)
 	return rgba
@@ -105,9 +105,9 @@ func fromColor(c color.Color) (h, s, v float64) {
 }
 
 func toFloatRGB(c color.Color) (float64, float64, float64) {
-	max := 65535.
-	r, g, b, _ := c.RGBA()
-	return float64(r) / max, float64(g) / max, float64(b) / max
+	rgba, _ := c.(color.NRGBA)
+	max := 255.
+	return float64(rgba.R) / max, float64(rgba.G) / max, float64(rgba.B) / max
 }
 
 func roundUint8(v float64) uint8 {

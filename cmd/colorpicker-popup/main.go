@@ -14,7 +14,7 @@ import (
 )
 
 var (
-	defaultColor = color.RGBA{0xff, 0x00, 0x00, 0xff}
+	defaultColor = color.NRGBA{0xff, 0x00, 0x00, 0xff}
 )
 
 func main() {
@@ -116,6 +116,6 @@ func (c *tappableDisplayColor) setColor(clr color.Color) {
 }
 
 func hexColorString(c color.Color) string {
-	rgba := color.RGBAModel.Convert(c).(color.RGBA)
-	return fmt.Sprintf("#%.2X%.2X%.2X", rgba.R, rgba.G, rgba.B)
+	rgba, _ := c.(color.NRGBA)
+	return fmt.Sprintf("#%.2X%.2X%.2X%.2X", rgba.R, rgba.G, rgba.B, rgba.A)
 }

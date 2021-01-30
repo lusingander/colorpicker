@@ -81,7 +81,7 @@ type tappableRect struct {
 func newTappableRect(fillColor color.Color) *tappableRect {
 	r := &tappableRect{
 		rect: &canvas.Rectangle{
-			StrokeColor: color.RGBA{255, 255, 255, 255},
+			StrokeColor: color.NRGBA{255, 255, 255, 255},
 			StrokeWidth: 1,
 			FillColor:   fillColor,
 		},

@@ -14,7 +14,7 @@ import (
 )
 
 var (
-	defaultColor = color.RGBA{0xff, 0x00, 0x00, 0xff}
+	defaultColor = color.NRGBA{0xff, 0x00, 0x00, 0xff}
 )
 
 func main() {
@@ -69,7 +69,7 @@ type displayColor struct {
 
 func newDisplayColor() *displayColor {
 	selectColorCode := widget.NewLabelWithStyle("", fyne.TextAlignLeading, fyne.TextStyle{Monospace: true})
-	selectColorRect := &canvas.Rectangle{FillColor: color.RGBA{0, 0, 0, 0}}
+	selectColorRect := &canvas.Rectangle{FillColor: color.NRGBA{0, 0, 0, 0}}
 	selectColorRect.SetMinSize(fyne.NewSize(30, 20))
 	return &displayColor{
 		label: selectColorCode,
@@ -84,7 +84,7 @@ func (c *displayColor) setColor(clr color.Color) {
 }
 
 func hexColorString(c color.Color) string {
-	rgba := color.RGBAModel.Convert(c).(color.RGBA)
+	rgba, _ := c.(color.NRGBA)
 	return fmt.Sprintf("#%.2X%.2X%.2X%.2X", rgba.R, rgba.G, rgba.B, rgba.A)
 }
 

@@ -9,8 +9,8 @@ import (
 )
 
 var (
-	markerFillColor   = color.RGBA{50, 50, 50, 120}
-	markerStrokeColor = color.RGBA{50, 50, 50, 200}
+	markerFillColor   = color.NRGBA{50, 50, 50, 120}
+	markerStrokeColor = color.NRGBA{50, 50, 50, 200}
 )
 
 type marker interface {

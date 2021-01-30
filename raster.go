@@ -34,7 +34,7 @@ func (r *tappableRaster) setPixelColor(pixelColor func(x, y, w, h int) color.Col
 	r.r.Generator = func(w, h int) image.Image {
 		if r.img == nil || r.img.Bounds().Size().X != w || r.img.Bounds().Size().Y != h {
 			rect := image.Rect(0, 0, w, h)
-			r.img = image.NewRGBA(rect)
+			r.img = image.NewNRGBA(rect)
 		}
 		for x := 0; x < w; x++ {
 			for y := 0; y < h; y++ {
