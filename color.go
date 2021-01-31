@@ -76,8 +76,8 @@ func fromHSVA(h, s, v, a float64) color.NRGBA {
 	return rgba
 }
 
-func fromColor(c color.Color) (h, s, v float64) {
-	r, g, b := toFloatRGB(c)
+func fromColor(c color.Color) (h, s, v, a float64) {
+	r, g, b, a := toFloatRGBA(c)
 	min := math.Min(r, math.Min(g, b))
 	max := math.Max(r, math.Max(g, b))
 	v = max
@@ -104,10 +104,10 @@ func fromColor(c color.Color) (h, s, v float64) {
 	return
 }
 
-func toFloatRGB(c color.Color) (float64, float64, float64) {
+func toFloatRGBA(c color.Color) (float64, float64, float64, float64) {
 	rgba, _ := c.(color.NRGBA)
 	max := 255.
-	return float64(rgba.R) / max, float64(rgba.G) / max, float64(rgba.B) / max
+	return float64(rgba.R) / max, float64(rgba.G) / max, float64(rgba.B) / max, float64(rgba.A) / max
 }
 
 func roundUint8(v float64) uint8 {

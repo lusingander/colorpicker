@@ -75,7 +75,7 @@ func TestFromColor(t *testing.T) {
 		{color.NRGBA{0x33, 0xff, 0xff, 0xff}, 180 / 360., 0.8, 1.},
 	}
 	for _, test := range tests {
-		h, s, v := fromColor(test.c)
+		h, s, v, _ := fromColor(test.c)
 		if notEquals(test.h, h) || notEquals(test.s, s) || notEquals(test.v, v) {
 			t.Errorf("fromColor(%v) = %f, %f, %f; want %f, %f, %f",
 				test.c, h, s, v, test.h, test.s, test.v)
@@ -93,7 +93,8 @@ func TestFromColorAndFromHSV(t *testing.T) {
 		}
 	}
 	for _, want := range wants {
-		got := fromHSV(fromColor(want))
+		h, s, v, _ := fromColor(want)
+		got := fromHSV(h, s, v)
 		if want != got {
 			t.Errorf("fromHSV(fromColor(%v)) = %v", want, got)
 		}

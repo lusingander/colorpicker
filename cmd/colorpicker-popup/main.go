@@ -26,24 +26,24 @@ func main() {
 }
 
 func createContainer(w fyne.Window) fyne.CanvasObject {
-	var current color.Color
-	current = defaultColor
+	var currentSimple color.Color
+	currentSimple = defaultColor
 
 	simpleDisplayColor := newSimpleDisplayColor()
 	picker := colorpicker.New(200, colorpicker.StyleHue)
 	picker.SetOnChanged(func(c color.Color) {
-		current = c
-		simpleDisplayColor.setColor(current)
+		currentSimple = c
+		simpleDisplayColor.setColor(currentSimple)
 	})
 	content := fyne.NewContainer(picker)
 	button := widget.NewButton("Open color picker", func() {
-		picker.SetColor(current)
+		picker.SetColor(currentSimple)
 		dialog.ShowCustom("Select color", "OK", content, w)
 	})
-	simpleDisplayColor.setColor(current)
+	simpleDisplayColor.setColor(currentSimple)
 
 	tappableDisplayColor := newTappableDisplayColor(w)
-	tappableDisplayColor.setColor(current)
+	tappableDisplayColor.setColor(defaultColor)
 
 	return fyne.NewContainerWithLayout(
 		layout.NewHBoxLayout(),
