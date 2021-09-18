@@ -3,10 +3,10 @@ module github.com/lusingander/colorpicker
 go 1.13
 
 require (
-	fyne.io/fyne/v2 v2.0.1
-	github.com/go-gl/gl v0.0.0-20210315015930-ae072cafe09d // indirect
-	github.com/srwiley/oksvg v0.0.0-20210320200257-875f767ac39a // indirect
-	golang.org/x/image v0.0.0-20210220032944-ac19c3e999fb // indirect
-	golang.org/x/net v0.0.0-20210324205630-d1beb07c2056 // indirect
-	golang.org/x/text v0.3.5 // indirect
+	fyne.io/fyne/v2 v2.1.0
+	github.com/go-gl/gl v0.0.0-20210905235341-f7a045908259 // indirect
+	github.com/srwiley/oksvg v0.0.0-20210519022825-9fc0c575d5fe // indirect
+	golang.org/x/image v0.0.0-20210628002857-a66eb6448b8d // indirect
+	golang.org/x/net v0.0.0-20210917221730-978cfadd31cf // indirect
+	golang.org/x/text v0.3.7 // indirect
 )
