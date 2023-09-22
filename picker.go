@@ -6,6 +6,7 @@ import (
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
+	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/theme"
 )
@@ -207,13 +208,13 @@ func newCircleHueColorPicker(size float32) ColorPicker {
 	picker.hueMarker = newCircleBarMarker(hueSize.Width, hueSize.Height, picker.cirlceHueBarWidth())
 
 	picker.CanvasObject = newSpaceCenteredLayout(
-		fyne.NewContainerWithLayout(
+		container.New(
 			layout.NewCenterLayout(),
-			fyne.NewContainer(
+			container.NewWithoutLayout(
 				circleHuePickerRaster,
 				picker.hueMarker.object(),
 			),
-			fyne.NewContainer(
+			container.NewWithoutLayout(
 				colorPickerRaster,
 				picker.colorMarker.object(),
 			),
@@ -308,8 +309,8 @@ func newValueColorPicker(size float32) ColorPicker {
 	picker.valueMarker.setPosition(fyne.NewPos(picker.valueBarCenter(), 0))
 
 	picker.CanvasObject = newSpaceCenteredLayout(
-		fyne.NewContainer(colorPickerRaster, picker.colorMarker.object()),
-		fyne.NewContainer(valuePickerRaster, picker.valueMarker.object()),
+		container.NewWithoutLayout(colorPickerRaster, picker.colorMarker.object()),
+		container.NewWithoutLayout(valuePickerRaster, picker.valueMarker.object()),
 		picker.alphaPickerBar.object(),
 	)
 	return picker
@@ -419,8 +420,8 @@ func newSaturationColorPicker(size float32) ColorPicker {
 	picker.saturationMarker.setPosition(fyne.NewPos(picker.saturationBarCenter(), 0))
 
 	picker.CanvasObject = newSpaceCenteredLayout(
-		fyne.NewContainer(colorPickerRaster, picker.colorMarker.object()),
-		fyne.NewContainer(saturationPickerRaster, picker.saturationMarker.object()),
+		container.NewWithoutLayout(colorPickerRaster, picker.colorMarker.object()),
+		container.NewWithoutLayout(saturationPickerRaster, picker.saturationMarker.object()),
 		picker.alphaPickerBar.object(),
 	)
 	return picker
@@ -490,10 +491,10 @@ func newAlphaPickerBar(size fyne.Size, tapped func()) *alphaPickerBar {
 }
 
 func (b *alphaPickerBar) object() fyne.CanvasObject {
-	return fyne.NewContainerWithLayout(
-		layout.NewMaxLayout(),
+	return container.New(
+		layout.NewStackLayout(),
 		newCheckeredBackground(),
-		fyne.NewContainer(b.raster, b.marker.object()),
+		container.NewWithoutLayout(b.raster, b.marker.object()),
 	)
 }
 
@@ -623,12 +624,12 @@ func newSpaceCenteredLayout(objects ...fyne.CanvasObject) *fyne.Container {
 }
 
 func newSpacedLayout(l fyne.Layout, objects ...fyne.CanvasObject) *fyne.Container {
-	c := fyne.NewContainerWithLayout(l)
-	c.AddObject(layout.NewSpacer())
+	c := container.New(l)
+	c.Add(layout.NewSpacer())
 	for _, o := range objects {
-		c.AddObject(o)
+		c.Add(o)
 	}
-	c.AddObject(layout.NewSpacer())
+	c.Add(layout.NewSpacer())
 	return c
 }
 

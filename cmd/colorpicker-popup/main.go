@@ -7,6 +7,7 @@ import (
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/canvas"
+	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/widget"
@@ -35,7 +36,7 @@ func createContainer(w fyne.Window) fyne.CanvasObject {
 		currentSimple = c
 		simpleDisplayColor.setColor(currentSimple)
 	})
-	content := fyne.NewContainer(picker)
+	content := container.NewWithoutLayout(picker)
 	button := widget.NewButton("Open color picker", func() {
 		picker.SetColor(currentSimple)
 		dialog.ShowCustom("Select color", "OK", content, w)
@@ -45,14 +46,14 @@ func createContainer(w fyne.Window) fyne.CanvasObject {
 	tappableDisplayColor := newTappableDisplayColor(w)
 	tappableDisplayColor.setColor(defaultColor)
 
-	return fyne.NewContainerWithLayout(
+	return container.New(
 		layout.NewHBoxLayout(),
 		layout.NewSpacer(),
-		fyne.NewContainerWithLayout(
+		container.New(
 			layout.NewVBoxLayout(),
 			layout.NewSpacer(),
 			button,
-			fyne.NewContainerWithLayout(
+			container.New(
 				layout.NewHBoxLayout(),
 				layout.NewSpacer(),
 				simpleDisplayColor.label,
@@ -61,7 +62,7 @@ func createContainer(w fyne.Window) fyne.CanvasObject {
 			),
 			layout.NewSpacer(),
 			widget.NewLabel("Or tap rectangle"),
-			fyne.NewContainerWithLayout(
+			container.New(
 				layout.NewHBoxLayout(),
 				layout.NewSpacer(),
 				tappableDisplayColor.label,

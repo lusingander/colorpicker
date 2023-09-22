@@ -7,6 +7,7 @@ import (
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/canvas"
+	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/widget"
 
@@ -21,14 +22,14 @@ func main() {
 	a := app.New()
 	w := a.NewWindow("color picker sample")
 
-	w.SetContent(fyne.NewContainerWithLayout(
+	w.SetContent(container.New(
 		layout.NewVBoxLayout(),
-		fyne.NewContainerWithLayout(
+		container.New(
 			layout.NewHBoxLayout(),
 			createPickerContainer(200, colorpicker.StyleHue),
 			createPickerContainer(200, colorpicker.StyleHueCircle),
 		),
-		fyne.NewContainerWithLayout(
+		container.New(
 			layout.NewHBoxLayout(),
 			createPickerContainer(200, colorpicker.StyleValue),
 			createPickerContainer(200, colorpicker.StyleSaturation),
@@ -48,10 +49,10 @@ func createPickerContainer(height float32, style colorpicker.PickerStyle) *fyne.
 	})
 	picker.SetColor(defaultColor)
 
-	return fyne.NewContainerWithLayout(
+	return container.New(
 		layout.NewVBoxLayout(),
 		picker, // layout
-		fyne.NewContainerWithLayout(
+		container.New(
 			layout.NewHBoxLayout(),
 			layout.NewSpacer(),
 			displayColor.label,
